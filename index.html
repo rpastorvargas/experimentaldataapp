@@ -1,0 +1,673 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Proyecto Fin de Carrera</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Ignacio Lequerica Navarro">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">    
+    
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,400,600" rel="stylesheet">
+    <link href="css/font-awesome.min.css" rel="stylesheet">
+    
+    
+    <link href="css/mystyles.css" rel="stylesheet">
+	<link href="css/examples.css" rel="stylesheet">
+    <link href="css/mystyles-responsive.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->	
+	
+	<style>
+	.table thead>tr>th, .table tbody>tr>th, .table tfoot>tr>th, .table thead>tr>td, .table tbody>tr>td, .table tfoot>tr>td {
+		padding: 3px;
+	}
+	
+	.labinfo {
+	}
+	
+	.labinfo div>label {
+		display:block;
+		padding:0px;
+	}
+	.labinfo div>input {
+		display:block;
+		padding:0px;
+		margin:0px;
+	}
+	
+	.form-group {
+		margin-bottom: 5px;
+	}
+	
+	.form-control {
+		height:24px;
+	}
+	
+	.demo-container {
+		box-sizing: border-box;
+		width: 100%;
+		height: 450px;
+		padding: 20px 15px 15px 15px;
+		margin: 15px auto 30px auto;
+		border: 1px solid #ddd;
+		background: #fff;
+		background: linear-gradient(#f6f6f6 0, #fff 50px);
+		background: -o-linear-gradient(#f6f6f6 0, #fff 50px);
+		background: -ms-linear-gradient(#f6f6f6 0, #fff 50px);
+		background: -moz-linear-gradient(#f6f6f6 0, #fff 50px);
+		background: -webkit-linear-gradient(#f6f6f6 0, #fff 50px);
+		box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+		-o-box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+		-ms-box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+		-moz-box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+		-webkit-box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+	}
+
+	.demo-placeholder {
+		width: 100%;
+		height: 100%;
+		font-size: 14px;
+		line-height: 1.2em;
+	}
+	</style>
+  </head>
+
+<body>
+ 	<div id="divloading" class="hidden text-center" style="position:absolute;width:100%;height:100%;z-index:1000;background:rgba(0, 0, 0, 0.9);">
+		<div style="position:relative;top:50%;">
+			<h1 style="color:#fff;">Cargando, por favor espere...</h1>
+			<img id="loadingimage" src="img/ajax-loader.gif" />
+		</div>
+	</div>
+	
+	<div class="subnavbar">
+		<div class="subnavbar-inner">		
+			<div class="container">
+				<a href="javascript:;" class="subnav-toggle collapsed" data-toggle="collapse" data-target=".subnav-collapse">
+				  <span class="sr-only">Toggle navigation</span>
+				  <i class="fa fa-bars"></i>				  
+				</a>
+				<div class="subnav-collapse collapse">
+					<ul class="mainnav">					
+						<li class="active">
+							<a href="javascript:;">
+								<i class="fa fa-home"></i>
+								<span>Inicio</span>
+							</a>	    				
+						</li>						
+						<li>					
+							<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
+								<i class="fa fa-th"></i>
+								<span>Sesiones</span>
+							</a>		
+						</li>				
+					</ul>
+				</div> <!-- /.subnav-collapse -->
+			</div> <!-- /container -->		
+		</div> <!-- /subnavbar-inner -->
+	</div> <!-- /subnavbar -->
+
+
+    <!-- Marketing messaging and featurettes
+    ================================================== -->
+    <!-- Wrap the rest of the page in another container to center all the content. -->
+	<div class="marketing" style="margin-top:20px;margin-bottom:20px;padding:20px;min-height:700px;">
+		<div style="border:1px solid #ccc;padding:20px;">
+			<div class="row">
+				<div class="col-sm-12">
+                
+                	<div class="widget stacked" style="padding-top:20px;">
+                    	<div class="widget-header">
+							<i class="fa fa-th"></i>
+							<h3>Sessions Information</h3>
+						</div> <!-- /widget-header -->
+                        
+                        <div class="widget-content">
+                        	<table class="table table-striped table-bordered" id="sessionsInformationTable">
+								<thead>
+									<tr>
+										<th>Laboratory</th>
+										<th class="text-center" >User</th>
+                                        <th class="text-center" >Experiment Name</th>
+                                        <th class="text-center" >Start time</th>
+                                        <th class="text-center" >Stop time</th>
+									</tr>
+								</thead>
+								<tbody>
+								</tbody>
+							</table>
+                        </div>
+                    
+                    </div>
+                    
+					<div class="widget stacked" style="padding-top:20px;">			
+						<div class="widget-header">
+							<i class="fa fa-th"></i>
+							<h3>Sesiones</h3>
+						</div> <!-- /widget-header -->
+						
+						<div class="widget-content">
+							<table class="table table-striped table-bordered" id="sessionsTable">
+								<thead>
+									<tr>
+										<th>Sesión</th>
+										<th class="text-center" style="width:80px">Finished</th>
+                                        <th class="text-center" style="width:120px">Start time</th>
+                                        <th class="text-center" style="width:120px">Stop time</th>
+                                        <th class="text-center" style="width:80px"></th>
+									</tr>
+								</thead>
+								<tbody>
+									<!--<tr>
+										<td class="sessionid">a52b6f26c393422c85eaff73360960d0</td>
+										<td class="text-center">
+											<a href="javascript:;" class="btn btn-xs btn-primary">
+												<i class="btn-icon-only fa fa-check selectsession"></i>										
+											</a>
+										</td>
+									</tr>
+									<tr>
+										<td class="sessionid">a52b6f26c393422c85eaff73360960d0</td>
+										<td class="text-center">
+											<a href="javascript:;" class="btn btn-xs btn-primary">
+												<i class="btn-icon-only fa fa-check selectsession"></i>										
+											</a>
+										</td>
+									</tr>-->
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div> <!-- /row -->
+			<div id="sessioninfo" class="hidden">
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="widget stacked" style="padding-top:20px;">			
+							<div class="widget-header">
+								<i class="fa fa-star"></i>
+								<h3>Sesion - LAB INFO</h3>
+							</div> <!-- /widget-header -->						
+							<div class="widget-content clearfix">
+								<div class="labinfo">
+									<div class="row">
+										<div class="col-sm-4">																			  
+										  <div class="form-group">
+											<label for="sessionid" class="control-label">Session ID</label>
+											<input type="text" class="form-control" id="sessionid" placeholder="Session ID">
+										  </div>
+										</div>
+										<div class="col-sm-4">																			  
+										  <div class="form-group">
+											<label for="experiment" class="control-label">Experiment</label>
+											<input type="text" class="form-control" id="experiment" placeholder="Experiment">
+										  </div>
+										</div>
+										<div class="col-sm-4">																			  
+										  <div class="form-group">
+											<label for="status" class="control-label">Status</label>
+											<input type="text" class="form-control" id="status" placeholder="Status">
+										  </div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-sm-4">
+										  <div class="form-group">
+											<label for="maxtimesession" class="control-label">Max Time Session</label>
+											<input type="text" class="form-control" id="maxtimesession" placeholder="Max Time Session">
+										  </div>
+										</div>
+										<div class="col-sm-4">
+										  <div class="form-group">
+											<label for="sampletimesession" class="control-label">Sample Time Session</label>
+											<input type="text" class="form-control" id="sampletimesession" placeholder="Sample Time Session">
+										  </div>
+										  <div class="form-group">
+											<div class="col-sm-offset-2 col-sm-10">
+											  <div class="checkbox">
+												<label>
+												  <input type="checkbox" id="data_available"><label for="data_available" class="control-label">Data Available</label>
+												</label>
+											  </div>
+											</div>
+										  </div>
+										</div>
+										<div class="col-sm-4">
+										  <div class="form-group">
+											<label for="sealed_time" class="control-label">Sealed Time</label>
+											<input type="text" class="form-control" id="sealed_time" placeholder="Sealed Time">
+										  </div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div> <!-- /row -->
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="widget stacked" style="padding-top:20px;">			
+							<div class="widget-header">
+								<i class="fa fa-bar-chart-o"></i>
+								<h3>Gráficos</h3>
+							</div> <!-- /widget-header -->
+							<div class="widget-content clearfix">
+								<div>
+									<button id="generarGrafica" type="button" class="btn btn-primary">Generar gráfica</button>
+									<select id="names"></select>
+								</div>
+							
+														
+							
+								<div class="demo-container">
+									<div id="placeholder" class="demo-placeholder"></div>
+								</div>
+							
+								<div class="col-sm-4">
+									<table id="tabledata" class="table table-hover">
+										<thead>
+										  <tr>
+											<th style="width:50%;">Second</th>
+											<th style="width:50%;">Value</th>
+										  </tr>
+										</thead>
+										<tbody>
+										</tbody>
+								  </table>
+								</div>
+							
+							</div>
+						</div>
+					</div>
+				</div> <!-- /row -->
+			</div>
+		</div>
+	</div>
+
+	<!-- FOOTER -->
+	<footer class="footer">
+		<div class="container text-center" style="color:#888;">
+			<div class="row">
+				<div class="col-md-12 text-center">Proyecto Fin de Carrera UNED</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6">Tutor: <a href="mailto:rpastor@scc.uned.es">Rafael Pastor Vargas</a></div>
+				<div class="col-md-6">Alumno: <a href="mailto:nacholn@gmail.com">Ignacio Lequerica Navarro</a></div>
+			</div>
+		</div>
+	</footer>
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+<script src="js/jquery-latest.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/jquery.flot.min.js"></script>
+<script type='text/javascript' src='js/jquery.soap.js'></script>
+<script type='text/javascript' src='js/jquery.xml2json.js'></script>
+<script type="text/javascript">
+		
+	$(function() {
+		window.onresize = function(event) {
+			if (typeof soapResponseData !== "undefined") {
+				paintGraph();
+			}
+		}
+	});
+
+	function paintGraph() {
+		getGraphData();
+		$.plot("#placeholder", [ dataGraph ]);
+		paintTable();
+	}
+	
+
+	var names = [];
+	var soapResponseData;
+	var maxtimesession;
+	var dataGraph = [];
+	
+	$(document).ready(function() {
+		
+		// This parameter (workSessionId) must be ser as get parameter in the request !!!
+		// Check for valid id !!!
+		
+		// This session has one experimental sessions (MAGLEV)
+		// var workSessionId = "05893f0c0f6b4b8d85fd4525e90b9b25";
+		
+		// This session has an experimental session but no data stored!!! (MAGLEV)
+		// var workSessionId = "b96540d25a614361b95d467b606d4244";
+		
+		// This session has not experimental sessions (Wind Turbine)
+		// var workSessionId = "09676571718a476aa8e9029ff6a4955b";
+		
+		// This session has three experimental sessions (MOTOR QET)
+	    workSessionId = "e4039c4e21d54708a9ea2d0a966ee1c0";
+		
+		// Populate the session Info table
+		loadSoapSessionsWS("getSessionInfo",{sessionId:workSessionId},getSessionInfoFunction);
+		// Populate experimental sessions from a work session
+		loadSoapSessionsWS("getExperimentSessions",{sessionID:workSessionId},getExperimentSessionsFunction);
+		
+		$("#generarGrafica").click(function() {
+			paintGraph();
+		});
+		
+/*		$.ajax({
+			url: "return_data.json",
+			type: "GET",
+			dataType: "json",
+			success: cargadatosdebug
+		});
+		
+		function cargadatosdebug(data) {
+			soapResponseData = data;
+			getSessionSimpleDataSetFunctionDebug();
+		}
+*/		
+	});
+	
+	function paintTable() {	
+		var tbody = $('#tabledata tbody');
+		tbody.html("");
+		jQuery.each(dataGraph, function(i, val) {
+			//alert('Valor ' + val);
+			var row = $('<tr></tr>');
+			jQuery.each(val, function(i, val2) {
+				//alert('Valor2 ' + val2);
+				var cell = $('<td></td>').text(val2);
+				row.append(cell);
+			});
+			tbody.append(row);
+		});
+	}
+
+	function getGraphData() {
+		var nameSelect = $("#names").val();
+		dataGraph = [];
+		var obj = soapResponseData.toJSON().Body;
+		var returnval = obj.getSessionSimpleDataSetResponse.return;
+		jQuery.each(returnval.data, function(i, ipos) {
+			var vars = JSON.parse(ipos);
+			var tickSealedTime = vars.sealed_time;
+			jQuery.each(vars.vars, function(j, jpos) {
+				if (nameSelect == jpos.name) {
+					dataGraph.push([tickSealedTime/100, jpos.value]);
+					//alert('tick' + tickSealedTime/100);
+					//alert('value' + jpos.value);
+					return false;
+				}
+			});	
+		});
+	}
+	
+	function getGraphDataDebug() {
+		var nameSelect = $("#names").val();
+		dataGraph = [];
+		jQuery.each(soapResponseData.return, function(i, ipos) {
+			var tickSealedTime = ipos.sealed_time;
+			jQuery.each(ipos.vars, function(j, jpos) {
+				if (nameSelect == jpos.name) {
+					dataGraph.push([tickSealedTime/100, jpos.value]);
+					//alert('tick' + tickSealedTime/100);
+					//alert('value' + jpos.value);
+					return false;
+				}
+			});	
+		});
+	}
+	
+	/**************************************************************
+	
+	SOAP SERVICES: getSessionSimpleDataSet, getSessionInfo 
+	PARAMETER: SessionID (Experimental)
+	
+	Description:	Get data (JSON) from the experimental session
+					Get info for experimental data !!! (if no data)
+	
+	**************************************************************/
+	function getExperimentalSessionInfoFunction(soapResponse,parameters){
+		soapResponseData = soapResponse;
+		var obj = soapResponseData.toJSON().Body;
+		var returnval = obj.getSessionInfoResponse.return;
+		// If return value (sessionId property) is defined --> data is available for the session
+		if (typeof returnval.sessionid == "undefined"){
+			// Inform to user deleting the access button
+			$("#sessionsTable td").filter(function() {
+        		if ($(this).text() == parameters.sessionId){;
+					$('td:last', $(this).parents('tr')).text("No data");
+				}
+    		});
+		}
+	}
+	
+	function getSessionSimpleDataSetFunction(soapResponse,parameters) {
+		$( "#sessioninfo" ).removeClass("hidden");
+		soapResponseData = soapResponse;
+		var obj = soapResponseData.toJSON().Body;
+		var returnval = obj.getSessionSimpleDataSetResponse.return;
+		jQuery.each(returnval.data, function(i, ipos) {
+			var vars = JSON.parse(ipos);
+			jQuery.each(vars.vars, function(j, jpos) {
+				var found = $.inArray(jpos.name, names) > -1;
+				if (!found) {
+					names.push(jpos.name);
+				}
+			});
+		});
+		jQuery.each(names, function(i, name) {
+			$('#names').append('<option value=' + name + ' selected=selected>' + name + '</option>');
+		});
+	}
+	
+	/*function getSessionSimpleDataSetFunctionDebug(data) {
+		//var jsonText = JSON.stringify(returnval);
+		jQuery.each(soapResponseData.return, function(i, ipos) {
+			maxtimesession = ipos.sealed_time;
+			jQuery.each(ipos.vars, function(j, jpos) {
+				var found = $.inArray(jpos.name, names) > -1;
+				if (!found) {
+					names.push(jpos.name);
+				}
+			});	
+		});
+		$('#maxtimesession').val(maxtimesession);
+		jQuery.each(names, function(i, name) {
+			$('#names').append('<option value=' + name + ' selected=selected>' + name + '</option>');
+		});
+	}*/
+
+	function loadSoapExperimentSessionsWS(method,parameters,successfunction) {
+		$("#divloading").removeClass("hidden");
+		$.soap({
+			url: 'http://lab.scc.uned.es:8080/axis2/services/SessionDataManagementWS/',
+			method: method,
+			// method: 'getSampleTimeSession',
+			//method: 'getDataSet',
+			
+			appendMethodToURL: true, 
+			
+			params: parameters,
+
+			namespaceQualifier: 'data',                     // used as namespace prefix for all elements in request (optional)
+			namespaceURL: 'http://data.sessions.ws.related.scc.uned.es',
+			
+			success: function (soapResponse) {
+				$("#divloading").addClass("hidden");
+				eval(successfunction(soapResponse,this.data));
+			},		
+			error: function (soapResponse) {
+				// show error
+				$("#divloading").addClass("hidden");
+				alert(soapResponse);
+				document.write("ERROR: " + soapResponse);
+			},
+			// Async (default= false)
+			async: true,
+			// debugging
+			enableLogging: true   
+		});
+	}
+	
+	
+	/*function loadSoapExperimentSessionsWS_New(method,parameters,successfunction) {
+		$("#divloading").removeClass("hidden");
+		$.soap({
+    		url: 'http://lab.scc.uned.es:8080/axis2/services/SessionDataManagementWS/',
+			method: method,
+			// method: 'getSampleTimeSession',
+			//method: 'getDataSet',
+			
+			appendMethodToURL: true, 
+			
+			params: parameters,
+
+			namespaceQualifier: 'data',                     // used as namespace prefix for all elements in request (optional)
+			namespaceURL: 'http://data.sessions.ws.related.scc.uned.es',
+			// debugging
+			enableLogging: true
+		}).done(function(data, textStatus, jqXHR) {
+    		$("#divloading").addClass("hidden");
+			eval(successfunction(jqXHR.responseText));
+		}).fail(function(jqXHR, textStatus, errorThrown) {
+    		// show error
+			$("#divloading").addClass("hidden");
+			alert(jqXHR.responseText);
+			document.write("ERROR: " + jqXHR.responseText);
+		});
+	}*/
+	
+	/**************************************************************
+	
+	SOAP SERVICES: getExperimentSessions, getSessionInfo 
+	PARAMETER: SessionID (Work session)
+	
+	Description: Populate experimental sessions (ID) related to a work
+				session
+	
+	**************************************************************/
+	function getSessionInfoFunction(soapResponse,parameters){
+		var obj = soapResponse.toJSON().Body;
+		var session = obj.getSessionInfoResponse.return;
+		if (typeof session == "object"){
+			// Present data to user
+			row = "<tr><td>";
+			row += session.systemName;
+			row += "</td>";
+			row += '<td class="text-center">' +  session.user + '</td>';
+			// To be filled...
+			row += '<td class="text-center" id="experiment-name">' +  'experiment name' + '</td>';
+			var startDate = new Date(session.startDate);
+			row += '<td class="text-center">' + startDate.toLocaleString() + '</td>';
+			var stopDate = new Date(session.stopDate); //Date.parse(session.stopDate);
+			row += '<td class="text-center">' + stopDate.toLocaleString() + '</td>';						
+			row += '</tr>';
+			row_object = $(row);
+			$('#sessionsInformationTable').append(row_object);			
+		}
+	}
+	
+	function getExperimentSessionsFunction(soapResponse,parameters) {
+		$( "#sessioninfo" ).removeClass("hidden");
+		// soapResponseData = soapResponse;
+		var obj = soapResponse.toJSON().Body;
+		var returnval = obj.getExperimentSessionsResponse.return;
+		var experiment_sessions = new Array();
+		
+		
+		// Check return value
+		if ($.isArray(returnval)){
+			// Two or more sessions
+			experiment_sessions = returnval;
+		} else if (typeof returnval == "object"){
+			// Only one session
+			experiment_sessions.push(returnval);
+		} // Otherwise no experiemntal sessions are associated
+		
+		var experiment_name = "";
+		jQuery.each(experiment_sessions, function(i, session) {
+			// Its the same for every session
+			experiment_name = session.experimentName;
+			// Add the session ID to table!!!
+			// More data to add
+			// Add the row !!!
+			row = "<tr><td class='sessionid'>";
+			row += session.ID;
+			row += "</td>";
+			row += '<td class="text-center"><img src="img/finished.' + session.sessionFinished + '.png"/></td>';
+			var startDate = new Date(session.startDate); // Date.parse(session.startDate);
+			row += '<td class="text-center">' + startDate.toLocaleString() + '</td>';
+			var stopDate = new Date(session.stopDate); //Date.parse(session.stopDate);
+			row += '<td class="text-center">' + stopDate.toLocaleString() + '</td>';
+			row += '<td class="text-center"><a href="javascript:;" class="btn btn-xs btn-primary">';
+			row += '<i class="btn-icon-only fa fa-check selectsession">';
+			row += '</i>';							
+			row += '</a></td></tr>';
+			row_object = $(row);
+			$('#sessionsTable').append(row_object);
+			
+			// check if experiment session has data session associated
+			loadSoapExperimentSessionsWS('getSessionInfo',{ sessionId: session.ID },getExperimentalSessionInfoFunction);
+		});
+		
+		/// Add the handler
+		// Click handler related to the associated session
+		$(".selectsession").click(function() {
+			var sessionIDval = $(this).closest("tr").find(".sessionid").text();
+			var parameters = { sessionId: sessionIDval };
+			// Check for session data in experimental data service
+			// If yes, data will be loaded
+			// otherwise nothing to do (message?)
+			loadSoapExperimentSessionsWS('getSessionSimpleDataSet',parameters,getSessionSimpleDataSetFunction);
+		});
+		
+		// Fill the id="experiment-name"
+		// created on sessionInfoTable
+		$('#experiment-name').html(experiment_name);
+		
+	}
+	
+	
+
+	function loadSoapSessionsWS(method,parameters,successfunction) {
+		var result;
+		$("#divloading").removeClass("hidden");
+		$.soap({
+			url: 'http://lab.scc.uned.es:8080/axis2/services/SessionsWS_v2/',
+			method: method,
+			// method: 'getSampleTimeSession',
+			//method: 'getDataSet',
+			
+			appendMethodToURL: true, 
+			
+			params: parameters,
+
+			namespaceQualifier: 'sessions',                     // used as namespace prefix for all elements in request (optional)
+			namespaceURL: 'http://sessions.ws.web.related.scc.uned.es',
+			
+			success: function (soapResponse) {
+				$("#divloading").addClass("hidden");
+				eval(successfunction(soapResponse,this.data));
+			},		
+			error: function (soapResponse) {
+				// show error
+				$("#divloading").addClass("hidden");
+				alert(soapResponse);
+				document.write("ERROR: " + soapResponse);
+			},
+			// debugging
+			enableLogging: true   
+		});
+	}
+	
+	</script>
+  </body>
+</html>

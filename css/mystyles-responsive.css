@@ -1,0 +1,90 @@
+﻿
+/*------------------------------------------------------------------
+[3. Max Width: 979px]
+*/
+@media (max-width: 979px) {
+  .subnavbar .subnavbar .container {
+    width: auto;
+  }
+}
+/* Extra small devices (phones, up to 480px) */
+/* No media query since this is the default in Bootstrap */
+@media (max-width: 768px) {
+  .subnavbar .subnav-toggle {
+    display: block;
+  }
+/*  .subnavbar {
+    margin-left: -20px;
+    margin-right: -20px;
+  }
+*/  
+  .subnavbar .btn-subnavbar {
+    display: block;
+  }
+  .subnavbar .subnavbar-inner {
+    height: auto;
+  }
+  .subnavbar .mainnav {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin-top: 1em;
+    margin-bottom: 1.5em;
+    border: none;
+  }
+  .subnavbar .mainnav > li {
+    float: none;
+    width: 100%;
+    height: auto;
+    margin-bottom: 1em;
+    text-align: left;
+    border: none;
+  }
+  .subnavbar .mainnav > li > a {
+    display: block;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin-right: .5em;
+    color: #CCC;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .subnavbar .mainnav > li > a > span {
+    display: inline;
+  }
+  .subnavbar .mainnav > li > a > i {
+    display: inline;
+    margin-right: .5em;
+    margin-bottom: 0;
+    font-size: 14px;
+  }
+  .subnavbar .mainnav > li.active > a {
+    color: #F90;
+    background: transparent;
+  }
+  
+  .footer {
+	position:relative;
+  }
+}
+/* Small devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+  .subnav-collapse.collapse {
+    display: block!important;
+    height: auto!important;
+    padding-bottom: 0;
+    overflow: visible!important;
+  }
+}
+/* Medium devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+  
+}
+/* Large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+  .navbar .container,
+  .subnavbar .container {
+    padding-right: 0;
+    padding-left: 0;
+  }
+}
