@@ -11,7 +11,8 @@
     <meta name="apple-mobile-web-app-capable" content="yes">    
     
     <link href="css/bootstrap.min.css" rel="stylesheet">
-    
+    <link rel="stylesheet" href="css/bootstrap-multiselect.css" type="text/css">
+			
     <link href="http://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,400,600" rel="stylesheet">
     <link href="css/font-awesome.min.css" rel="stylesheet">
     
@@ -77,11 +78,63 @@
 		font-size: 14px;
 		line-height: 1.2em;
 	}
+	
+	
+	
+	
+/*------------------------------------------------------------------
+[ Shortcuts / .shortcuts ]
+*/
+.shortcuts {
+  text-align: center;
+}
+.shortcuts .shortcut {
+  width: 110px;
+  display: inline-block;
+  padding: 15px 0;
+  vertical-align: top;
+  text-decoration: none;
+  background: #F3F3F3;
+  background-image: -webkit-gradient(linear, left 0%, left 100%, from(#ffffff), to(#eeeeee));
+  background-image: -webkit-linear-gradient(top, #ffffff, 0%, #eeeeee, 100%);
+  background-image: -moz-linear-gradient(top, #ffffff 0%, #eeeeee 100%);
+  background-image: linear-gradient(to bottom, #ffffff 0%, #eeeeee 100%);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffffff', endColorstr='#ffeeeeee', GradientType=0);
+  border: 1px solid #ddd;
+  box-sizing: border-box;
+  border-radius: 5px;
+}
+.shortcuts .shortcut .shortcut-icon {
+  width: 100%;
+  font-size: 32px;
+  color: #555;
+}
+.shortcuts .shortcut:hover, .shortcut.active {
+  background: #E8E8E8;
+  background-image: -webkit-gradient(linear, left 0%, left 100%, from(#fafafa), to(#e1e1e1));
+  background-image: -webkit-linear-gradient(top, #fafafa, 0%, #e1e1e1, 100%);
+  background-image: -moz-linear-gradient(top, #fafafa 0%, #e1e1e1 100%);
+  background-image: linear-gradient(to bottom, #fafafa 0%, #e1e1e1 100%);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fffafafa', endColorstr='#ffe1e1e1', GradientType=0);
+}
+.shortcuts .shortcut:active {
+  box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+}
+.shortcuts .shortcut:hover .shortcut-icon {
+  color: #666;
+}
+.shortcuts .shortcut-label {
+  display: inline;
+  font-weight: 400;
+  color: #666;
+}
 	</style>
   </head>
 
 <body>
- 	<div id="divloading" class="hidden text-center" style="position:absolute;width:100%;height:100%;z-index:1000;background:rgba(0, 0, 0, 0.9);">
+ 	<div id="divloading" class="hidden text-center" style="position:fixed;width:100%;height:100%;z-index:1000;background:rgba(0, 0, 0, 0.9);">
 		<div style="position:relative;top:50%;">
 			<h1 style="color:#fff;">Cargando, por favor espere...</h1>
 			<img id="loadingimage" src="img/ajax-loader.gif" />
@@ -89,29 +142,29 @@
 	</div>
 	
 	<div class="subnavbar">
-		<div class="subnavbar-inner">		
+		<div class="subnavbar-inner">
 			<div class="container">
 				<a href="javascript:;" class="subnav-toggle collapsed" data-toggle="collapse" data-target=".subnav-collapse">
 				  <span class="sr-only">Toggle navigation</span>
-				  <i class="fa fa-bars"></i>				  
+				  <i class="fa fa-bars"></i>
 				</a>
 				<div class="subnav-collapse collapse">
-					<ul class="mainnav">					
+					<ul class="mainnav">
 						<li class="active">
 							<a href="javascript:;">
 								<i class="fa fa-home"></i>
 								<span>Inicio</span>
-							</a>	    				
-						</li>						
-						<li>					
+							</a>
+						</li>
+						<li>
 							<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
 								<i class="fa fa-th"></i>
 								<span>Sesiones</span>
-							</a>		
-						</li>				
+							</a>
+						</li>
 					</ul>
 				</div> <!-- /.subnav-collapse -->
-			</div> <!-- /container -->		
+			</div> <!-- /container -->
 		</div> <!-- /subnavbar-inner -->
 	</div> <!-- /subnavbar -->
 
@@ -144,74 +197,67 @@
 								<tbody>
 								</tbody>
 							</table>
-                        </div>
-                    
-                    </div>
-                    
-					<div class="widget stacked" style="padding-top:20px;">			
-						<div class="widget-header">
-							<i class="fa fa-th"></i>
-							<h3>Sesiones</h3>
-						</div> <!-- /widget-header -->
-						
-						<div class="widget-content">
 							<table class="table table-striped table-bordered" id="sessionsTable">
 								<thead>
 									<tr>
-										<th>Sesión</th>
-										<th class="text-center" style="width:80px">Finished</th>
-                                        <th class="text-center" style="width:120px">Start time</th>
-                                        <th class="text-center" style="width:120px">Stop time</th>
-                                        <th class="text-center" style="width:80px"></th>
+										<th style="width:60%;">Sesión</th>
+										<th class="text-center" style="width:10%;">Finished</th>
+                                        <th class="text-center" style="width:10%;">Start time</th>
+                                        <th class="text-center" style="width:10%;">Stop time</th>
+                                        <th class="text-center" style="width:10%;"></th>
 									</tr>
 								</thead>
 								<tbody>
-									<!--<tr>
-										<td class="sessionid">a52b6f26c393422c85eaff73360960d0</td>
-										<td class="text-center">
-											<a href="javascript:;" class="btn btn-xs btn-primary">
-												<i class="btn-icon-only fa fa-check selectsession"></i>										
-											</a>
-										</td>
-									</tr>
-									<tr>
-										<td class="sessionid">a52b6f26c393422c85eaff73360960d0</td>
-										<td class="text-center">
-											<a href="javascript:;" class="btn btn-xs btn-primary">
-												<i class="btn-icon-only fa fa-check selectsession"></i>										
-											</a>
-										</td>
-									</tr>-->
 								</tbody>
 							</table>
-						</div>
-					</div>
+                        </div>
+                    
+                    </div>
 				</div>
 			</div> <!-- /row -->
+			
 			<div id="sessioninfo" class="hidden">
 				<div class="row">
 					<div class="col-sm-12">
-						<div class="widget stacked" style="padding-top:20px;">			
+						<div class="shortcuts">
+							<a id="shortcutinfo" href="javascript:;" class="shortcut active">
+								<i class="shortcut-icon fa fa-list-alt"></i>
+								<span class="shortcut-label">Info</span>
+							</a>
+							<a id="shortcutgraphics" href="javascript:;" class="shortcut">
+								<i class="shortcut-icon fa fa-bar-chart-o"></i>
+								<span class="shortcut-label">Graphics</span>
+							</a>
+							<a id="shortcutlive" href="javascript:;" class="shortcut">
+								<i class="shortcut-icon fa fa-signal"></i>
+								<span class="shortcut-label">Live</span>
+							</a>
+						</div> <!-- /shortcuts -->
+					</div>
+				</div>
+				<div id="sessioninfoinfo" class="row">
+					<div class="col-sm-12">
+						<div class="widget stacked" style="padding-top:20px;">
 							<div class="widget-header">
-								<i class="fa fa-star"></i>
+								<i class="fa fa-list-alt"></i>
 								<h3>Sesion - LAB INFO</h3>
-							</div> <!-- /widget-header -->						
+							</div> <!-- /widget-header -->
 							<div class="widget-content clearfix">
 								<div class="labinfo">
 									<div class="row">
-										<div class="col-sm-4">																			  
+										<div class="col-sm-4">
 										  <div class="form-group">
 											<label for="sessionid" class="control-label">Session ID</label>
 											<input type="text" class="form-control" id="sessionid" placeholder="Session ID">
 										  </div>
 										</div>
-										<div class="col-sm-4">																			  
+										<div class="col-sm-4">
 										  <div class="form-group">
 											<label for="experiment" class="control-label">Experiment</label>
 											<input type="text" class="form-control" id="experiment" placeholder="Experiment">
 										  </div>
 										</div>
-										<div class="col-sm-4">																			  
+										<div class="col-sm-4">
 										  <div class="form-group">
 											<label for="status" class="control-label">Status</label>
 											<input type="text" class="form-control" id="status" placeholder="Status">
@@ -252,9 +298,9 @@
 						</div>
 					</div>
 				</div> <!-- /row -->
-				<div class="row">
+				<div id="sessioninfographics" class="row">
 					<div class="col-sm-12">
-						<div class="widget stacked" style="padding-top:20px;">			
+						<div class="widget stacked" style="padding-top:20px;">
 							<div class="widget-header">
 								<i class="fa fa-bar-chart-o"></i>
 								<h3>Gráficos</h3>
@@ -262,28 +308,13 @@
 							<div class="widget-content clearfix">
 								<div>
 									<button id="generarGrafica" type="button" class="btn btn-primary">Generar gráfica</button>
-									<select id="names"></select>
+									<select id="names" multiple="multiple">
+									</select>
 								</div>
-							
-														
 							
 								<div class="demo-container">
 									<div id="placeholder" class="demo-placeholder"></div>
 								</div>
-							
-								<div class="col-sm-4">
-									<table id="tabledata" class="table table-hover">
-										<thead>
-										  <tr>
-											<th style="width:50%;">Second</th>
-											<th style="width:50%;">Value</th>
-										  </tr>
-										</thead>
-										<tbody>
-										</tbody>
-								  </table>
-								</div>
-							
 							</div>
 						</div>
 					</div>
@@ -305,6 +336,34 @@
 		</div>
 	</footer>
 
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel">Graph Values</h4>
+      </div>
+      <div class="modal-body" style="height:500px;overflow-y:scroll;">
+		<table id="tabledata" class="table table-hover">
+			<thead>
+				<tr>
+					<th style="width:50%;">Second</th>
+					<th style="width:50%;">Value</th>
+				</tr>
+			</thead>
+			<tbody>
+			</tbody>
+		</table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
     <!-- Le javascript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
@@ -313,29 +372,18 @@
 <script src="js/jquery.flot.min.js"></script>
 <script type='text/javascript' src='js/jquery.soap.js'></script>
 <script type='text/javascript' src='js/jquery.xml2json.js'></script>
+<script type="text/javascript" src="js/bootstrap-multiselect.js"></script>
 <script type="text/javascript">
 		
-	$(function() {
+	$(document).ready(function() {
+	
+		$('#names').multiselect();
+		
 		window.onresize = function(event) {
 			if (typeof soapResponseData !== "undefined") {
 				paintGraph();
 			}
 		}
-	});
-
-	function paintGraph() {
-		getGraphData();
-		$.plot("#placeholder", [ dataGraph ]);
-		paintTable();
-	}
-	
-
-	var names = [];
-	var soapResponseData;
-	var maxtimesession;
-	var dataGraph = [];
-	
-	$(document).ready(function() {
 		
 		// This parameter (workSessionId) must be ser as get parameter in the request !!!
 		// Check for valid id !!!
@@ -361,6 +409,30 @@
 			paintGraph();
 		});
 		
+		$("#sessioninfoinfo").show();
+		$("#sessioninfographics").hide();
+
+		$("#shortcutinfo").click(function() {
+			$(".shortcuts > a").removeClass("active");
+			$("#shortcutinfo").addClass("active");
+			$("#sessioninfoinfo").show("fast").fadeIn("fast");
+			$("#sessioninfographics").hide("fast").fadeOut("fast");
+		});
+		$("#shortcutgraphics").click(function() {
+			$(".shortcuts > a").removeClass("active");
+			$("#shortcutgraphics").addClass("active");
+			$("#sessioninfographics").show("fast").fadeIn("fast");
+			$("#sessioninfoinfo").hide("fast").fadeOut("fast");
+			paintGraph();
+		});
+		$("#shortcutlive").click(function() {
+			$("#sessioninfographics").show("fast").fadeout("fast");
+		});
+		
+		$(document).on('click', ".graphlegend", function() {
+			paintTable($(this).text());
+			$('#myModal').modal('show');
+		});
 /*		$.ajax({
 			url: "return_data.json",
 			type: "GET",
@@ -374,38 +446,76 @@
 		}
 */		
 	});
+
+	function paintGraph() {
 	
-	function paintTable() {	
-		var tbody = $('#tabledata tbody');
-		tbody.html("");
-		jQuery.each(dataGraph, function(i, val) {
-			//alert('Valor ' + val);
-			var row = $('<tr></tr>');
-			jQuery.each(val, function(i, val2) {
-				//alert('Valor2 ' + val2);
-				var cell = $('<td></td>').text(val2);
-				row.append(cell);
-			});
-			tbody.append(row);
+		togglePlot = function(seriesIdx)
+		{
+			var someData = somePlot.getData();
+			someData[seriesIdx].lines.show = !someData[seriesIdx].lines.show;
+			somePlot.setData(someData);
+			somePlot.draw();
+		}
+
+		getGraphData();
+		//$.plot("#placeholder", dataGraph);
+		$.plot($("#placeholder"), dataGraph, {
+			series: {
+				lines: {
+				show: true
+				}
+			},
+			legend: {
+					labelFormatter: function(label, series){
+					//return '<a onclick="paintTable(\''+label+'\');">'+label+'</a>';
+					return '<a class="graphlegend">'+label+'</a>';
+				}
+			}
+		});
+	}
+
+	var names = [];
+	var soapResponseData;
+	var maxtimesession;
+	var dataGraph = [];
+	
+	
+	function paintTable(label) {
+		jQuery.each(dataGraph, function(i, ipos) {
+			if (ipos.label == label) {
+				dataGraph2 = ipos.data;
+				var tbody = $('#tabledata tbody');
+				tbody.html("");
+				jQuery.each(dataGraph2, function(i, val) {
+					var row = $('<tr></tr>');
+					jQuery.each(val, function(i, val2) {
+						var cell = $('<td></td>').text(val2);
+						row.append(cell);
+					});
+					tbody.append(row);
+				});
+			}
 		});
 	}
 
 	function getGraphData() {
-		var nameSelect = $("#names").val();
 		dataGraph = [];
-		var obj = soapResponseData.toJSON().Body;
-		var returnval = obj.getSessionSimpleDataSetResponse.return;
-		jQuery.each(returnval.data, function(i, ipos) {
-			var vars = JSON.parse(ipos);
-			var tickSealedTime = vars.sealed_time;
-			jQuery.each(vars.vars, function(j, jpos) {
-				if (nameSelect == jpos.name) {
-					dataGraph.push([tickSealedTime/100, jpos.value]);
-					//alert('tick' + tickSealedTime/100);
-					//alert('value' + jpos.value);
-					return false;
-				}
-			});	
+		$("#names option:selected").each(function() {
+			var nameSelect = $(this).val();
+			var dataGraph2 = [];
+			var obj = soapResponseData.toJSON().Body;
+			var returnval = obj.getSessionSimpleDataSetResponse.return;
+			jQuery.each(returnval.data, function(i, ipos) {
+				var vars = JSON.parse(ipos);
+				var tickSealedTime = vars.sealed_time;
+				jQuery.each(vars.vars, function(j, jpos) {
+					if (nameSelect == jpos.name) {
+						dataGraph2.push([tickSealedTime/100, jpos.value]);
+						return false;
+					}
+				});
+			});
+			dataGraph.push( {label: nameSelect, data: dataGraph2} );
 		});
 	}
 	
@@ -417,8 +527,6 @@
 			jQuery.each(ipos.vars, function(j, jpos) {
 				if (nameSelect == jpos.name) {
 					dataGraph.push([tickSealedTime/100, jpos.value]);
-					//alert('tick' + tickSealedTime/100);
-					//alert('value' + jpos.value);
 					return false;
 				}
 			});	
@@ -464,8 +572,9 @@
 			});
 		});
 		jQuery.each(names, function(i, name) {
-			$('#names').append('<option value=' + name + ' selected=selected>' + name + '</option>');
+			$('#names').append('<option value=' + name + '>' + name + '</option>');
 		});
+		$('#names').multiselect('rebuild');
 	}
 	
 	/*function getSessionSimpleDataSetFunctionDebug(data) {
@@ -568,15 +677,14 @@
 			var startDate = new Date(session.startDate);
 			row += '<td class="text-center">' + startDate.toLocaleString() + '</td>';
 			var stopDate = new Date(session.stopDate); //Date.parse(session.stopDate);
-			row += '<td class="text-center">' + stopDate.toLocaleString() + '</td>';						
+			row += '<td class="text-center">' + stopDate.toLocaleString() + '</td>';
 			row += '</tr>';
 			row_object = $(row);
-			$('#sessionsInformationTable').append(row_object);			
+			$('#sessionsInformationTable').append(row_object);
 		}
 	}
 	
 	function getExperimentSessionsFunction(soapResponse,parameters) {
-		$( "#sessioninfo" ).removeClass("hidden");
 		// soapResponseData = soapResponse;
 		var obj = soapResponse.toJSON().Body;
 		var returnval = obj.getExperimentSessionsResponse.return;
@@ -609,7 +717,7 @@
 			row += '<td class="text-center">' + stopDate.toLocaleString() + '</td>';
 			row += '<td class="text-center"><a href="javascript:;" class="btn btn-xs btn-primary">';
 			row += '<i class="btn-icon-only fa fa-check selectsession">';
-			row += '</i>';							
+			row += '</i>';
 			row += '</a></td></tr>';
 			row_object = $(row);
 			$('#sessionsTable').append(row_object);
@@ -626,6 +734,7 @@
 			// Check for session data in experimental data service
 			// If yes, data will be loaded
 			// otherwise nothing to do (message?)
+			$('#names option').remove();
 			loadSoapExperimentSessionsWS('getSessionSimpleDataSet',parameters,getSessionSimpleDataSetFunction);
 		});
 		
