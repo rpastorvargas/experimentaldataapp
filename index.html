@@ -18,7 +18,7 @@
     
     
     <link href="css/mystyles.css" rel="stylesheet">
-	<link href="css/examples.css" rel="stylesheet">
+	<!--<link href="css/examples.css" rel="stylesheet">-->
     <link href="css/mystyles-responsive.css" rel="stylesheet">
 
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
@@ -27,109 +27,7 @@
     <![endif]-->	
 	
 	<style>
-	.table thead>tr>th, .table tbody>tr>th, .table tfoot>tr>th, .table thead>tr>td, .table tbody>tr>td, .table tfoot>tr>td {
-		padding: 3px;
-	}
 	
-	.labinfo {
-	}
-	
-	.labinfo div>label {
-		display:block;
-		padding:0px;
-	}
-	.labinfo div>input {
-		display:block;
-		padding:0px;
-		margin:0px;
-	}
-	
-	.form-group {
-		margin-bottom: 5px;
-	}
-	
-	.form-control {
-		height:24px;
-	}
-	
-	.demo-container {
-		box-sizing: border-box;
-		width: 100%;
-		height: 450px;
-		padding: 20px 15px 15px 15px;
-		margin: 15px auto 30px auto;
-		border: 1px solid #ddd;
-		background: #fff;
-		background: linear-gradient(#f6f6f6 0, #fff 50px);
-		background: -o-linear-gradient(#f6f6f6 0, #fff 50px);
-		background: -ms-linear-gradient(#f6f6f6 0, #fff 50px);
-		background: -moz-linear-gradient(#f6f6f6 0, #fff 50px);
-		background: -webkit-linear-gradient(#f6f6f6 0, #fff 50px);
-		box-shadow: 0 3px 10px rgba(0,0,0,0.15);
-		-o-box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-		-ms-box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-		-moz-box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-		-webkit-box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-	}
-
-	.demo-placeholder {
-		width: 100%;
-		height: 100%;
-		font-size: 14px;
-		line-height: 1.2em;
-	}
-	
-	
-	
-	
-/*------------------------------------------------------------------
-[ Shortcuts / .shortcuts ]
-*/
-.shortcuts {
-  text-align: center;
-}
-.shortcuts .shortcut {
-  width: 110px;
-  display: inline-block;
-  padding: 15px 0;
-  vertical-align: top;
-  text-decoration: none;
-  background: #F3F3F3;
-  background-image: -webkit-gradient(linear, left 0%, left 100%, from(#ffffff), to(#eeeeee));
-  background-image: -webkit-linear-gradient(top, #ffffff, 0%, #eeeeee, 100%);
-  background-image: -moz-linear-gradient(top, #ffffff 0%, #eeeeee 100%);
-  background-image: linear-gradient(to bottom, #ffffff 0%, #eeeeee 100%);
-  background-repeat: repeat-x;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffffff', endColorstr='#ffeeeeee', GradientType=0);
-  border: 1px solid #ddd;
-  box-sizing: border-box;
-  border-radius: 5px;
-}
-.shortcuts .shortcut .shortcut-icon {
-  width: 100%;
-  font-size: 32px;
-  color: #555;
-}
-.shortcuts .shortcut:hover, .shortcut.active {
-  background: #E8E8E8;
-  background-image: -webkit-gradient(linear, left 0%, left 100%, from(#fafafa), to(#e1e1e1));
-  background-image: -webkit-linear-gradient(top, #fafafa, 0%, #e1e1e1, 100%);
-  background-image: -moz-linear-gradient(top, #fafafa 0%, #e1e1e1 100%);
-  background-image: linear-gradient(to bottom, #fafafa 0%, #e1e1e1 100%);
-  background-repeat: repeat-x;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fffafafa', endColorstr='#ffe1e1e1', GradientType=0);
-}
-.shortcuts .shortcut:active {
-  box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
-}
-.shortcuts .shortcut:hover .shortcut-icon {
-  color: #666;
-}
-.shortcuts .shortcut-label {
-  display: inline;
-  font-weight: 400;
-  color: #666;
-}
 	</style>
   </head>
 
@@ -172,15 +70,17 @@
     <!-- Marketing messaging and featurettes
     ================================================== -->
     <!-- Wrap the rest of the page in another container to center all the content. -->
-	<div class="marketing" style="margin-top:20px;margin-bottom:20px;padding:20px;min-height:700px;">
-		<div style="border:1px solid #ccc;padding:20px;">
+	<div class="marketing">
+		<div>
 			<div class="row">
 				<div class="col-sm-12">
-                
-                	<div class="widget stacked" style="padding-top:20px;">
+                	<div class="widget">
                     	<div class="widget-header">
 							<i class="fa fa-th"></i>
 							<h3>Sessions Information</h3>
+							<div class="widget-ctrls"> 
+								<a href="javascript:;" class="button-icon button-icon-minimize"><i class="fa fa-minus"></i></a>
+							</div>
 						</div> <!-- /widget-header -->
                         
                         <div class="widget-content">
@@ -217,8 +117,8 @@
 			</div> <!-- /row -->
 			
 			<div id="sessioninfo" class="hidden">
-				<div class="row">
-					<div class="col-sm-12">
+				<div id="sessionbuttons" class="row">
+					<div class="col-sm-3">
 						<div class="shortcuts">
 							<a id="shortcutinfo" href="javascript:;" class="shortcut active">
 								<i class="shortcut-icon fa fa-list-alt"></i>
@@ -234,13 +134,16 @@
 							</a>
 						</div> <!-- /shortcuts -->
 					</div>
+					<div class="col-sm-6 text-left" style="margin-top:30px;">
+						<h3 style="font-weight:bold;">Session Selected:</h3><h3 id="sessionselected"></h3>
+					</div>
 				</div>
 				<div id="sessioninfoinfo" class="row">
 					<div class="col-sm-12">
-						<div class="widget stacked" style="padding-top:20px;">
+						<div class="widget">
 							<div class="widget-header">
 								<i class="fa fa-list-alt"></i>
-								<h3>Sesion - LAB INFO</h3>
+								<h3>Information</h3>
 							</div> <!-- /widget-header -->
 							<div class="widget-content clearfix">
 								<div class="labinfo">
@@ -300,7 +203,7 @@
 				</div> <!-- /row -->
 				<div id="sessioninfographics" class="row">
 					<div class="col-sm-12">
-						<div class="widget stacked" style="padding-top:20px;">
+						<div class="widget">
 							<div class="widget-header">
 								<i class="fa fa-bar-chart-o"></i>
 								<h3>Gráficos</h3>
@@ -308,12 +211,44 @@
 							<div class="widget-content clearfix">
 								<div>
 									<button id="generarGrafica" type="button" class="btn btn-primary">Generar gráfica</button>
-									<select id="names" multiple="multiple">
+									<select id="names" multiple="multiple" class="multipleselect">
 									</select>
 								</div>
 							
 								<div class="demo-container">
 									<div id="placeholder" class="demo-placeholder"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div> <!-- /row -->
+				<div id="sessioninfolive" class="row">
+					<div class="col-sm-12">
+						<div class="widget">
+							<div class="widget-header">
+								<i class="fa fa-signal"></i>
+								<h3>Live</h3>
+							</div> <!-- /widget-header -->
+							<div class="widget-content clearfix">
+								<div>
+									<button id="startlive" type="button" class="btn btn-primary">Start</button>
+									<select id="names2" multiple="multiple" class="multipleselect">
+									</select>
+								</div>
+							
+								<div class="demo-container">
+									<div id="placeholder2" class="demo-placeholder"></div>
+								</div>
+								<div class="row text-center" style="text-align:center;">
+									<div class="html5-progress-bar col-sm-8 col-sm-offset-2">
+										<div class="progress-bar-wrapper">
+											<progress id="progressbar" value="0" max="100"></progress>
+											<span class="progress-value">0%</span>
+										</div>
+										<div style="margin-top:-23px;">
+											<input id="rangebar" type="range" name="price" id="price" min="0" max="100" value="0" style="width:100%;" />
+										</div>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -367,692 +302,12 @@
     <!-- Le javascript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-<script src="js/jquery-latest.js"></script>
-<script src="js/bootstrap.min.js"></script>
-<script src="js/jquery.flot.min.js"></script>
-<script type='text/javascript' src='js/jquery.soap.js'></script>
-<script type='text/javascript' src='js/jquery.xml2json.js'></script>
-<script type="text/javascript" src="js/bootstrap-multiselect.js"></script>
-<script type="text/javascript">
-		
-	// Global variables;
-	var systemId = "";  //Empty. Got from experiment session data !!!
-	
-	// Information about variables
-	var vars_info = null;
-	
-	// For the "live" tab
-	var graphs_info = null;
-	var views_info = null;
-		
-	$(document).ready(function() {
-	
-		$('#names').multiselect();
-		
-		window.onresize = function(event) {
-			if (typeof soapResponseData !== "undefined") {
-				paintGraph();
-			}
-		}
-		
-		// This parameter (workSessionId) must be ser as get parameter in the request !!!
-		// Check for valid id !!!
-		
-		// This session has one experimental sessions (MAGLEV)
-		// var workSessionId = "05893f0c0f6b4b8d85fd4525e90b9b25";
-		
-		// This session has an experimental session but no data stored!!! (MAGLEV)
-		// var workSessionId = "b96540d25a614361b95d467b606d4244";
-		
-		// This session has not experimental sessions (Wind Turbine)
-		// var workSessionId = "09676571718a476aa8e9029ff6a4955b";
-		
-		// This session has three experimental sessions (MOTOR QET)
-	    workSessionId = "e4039c4e21d54708a9ea2d0a966ee1c0";
-		
-		// Populate the session Info table
-		loadSoapSessionsWS("getSessionInfo",{sessionId:workSessionId},getSessionInfoFunction);
-		// Populate experimental sessions from a work session
-		loadSoapSessionsWS("getExperimentSessions",{sessionID:workSessionId},getExperimentSessionsFunction);
-		
-		$("#generarGrafica").click(function() {
-			paintGraph();
-		});
-		
-		$("#sessioninfoinfo").show();
-		$("#sessioninfographics").hide();
-
-		$("#shortcutinfo").click(function() {
-			$(".shortcuts > a").removeClass("active");
-			$("#shortcutinfo").addClass("active");
-			$("#sessioninfoinfo").show("fast").fadeIn("fast");
-			$("#sessioninfographics").hide("fast").fadeOut("fast");
-		});
-		$("#shortcutgraphics").click(function() {
-			$(".shortcuts > a").removeClass("active");
-			$("#shortcutgraphics").addClass("active");
-			$("#sessioninfographics").show("fast").fadeIn("fast");
-			$("#sessioninfoinfo").hide("fast").fadeOut("fast");
-			paintGraph();
-		});
-		$("#shortcutlive").click(function() {
-			$("#sessioninfographics").show("fast").fadeout("fast");
-		});
-		
-		$(document).on('click', ".graphlegend", function() {
-			paintTable($(this).text());
-			$('#myModal').modal('show');
-		});
-/*		$.ajax({
-			url: "return_data.json",
-			type: "GET",
-			dataType: "json",
-			success: cargadatosdebug
-		});
-		
-		function cargadatosdebug(data) {
-			soapResponseData = data;
-			getSessionSimpleDataSetFunctionDebug();
-		}
-*/		
-	});
-
-	function paintGraph() {
-	
-		togglePlot = function(seriesIdx)
-		{
-			var someData = somePlot.getData();
-			someData[seriesIdx].lines.show = !someData[seriesIdx].lines.show;
-			somePlot.setData(someData);
-			somePlot.draw();
-		}
-
-		getGraphData();
-		//$.plot("#placeholder", dataGraph);
-		$.plot($("#placeholder"), dataGraph, {
-			series: {
-				lines: {
-				show: true
-				}
-			},
-			legend: {
-					labelFormatter: function(label, series){
-					//return '<a onclick="paintTable(\''+label+'\');">'+label+'</a>';
-					return '<a class="graphlegend">'+label+'</a>';
-				}
-			}
-		});
-	}
-
-	var names = [];
-	var soapResponseData;
-	var maxtimesession;
-	var dataGraph = [];
-	
-	
-	function paintTable(label) {
-		jQuery.each(dataGraph, function(i, ipos) {
-			if (ipos.label == label) {
-				dataGraph2 = ipos.data;
-				var tbody = $('#tabledata tbody');
-				tbody.html("");
-				jQuery.each(dataGraph2, function(i, val) {
-					var row = $('<tr></tr>');
-					jQuery.each(val, function(i, val2) {
-						var cell = $('<td></td>').text(val2);
-						row.append(cell);
-					});
-					tbody.append(row);
-				});
-			}
-		});
-	}
-
-	function getGraphData() {
-		dataGraph = [];
-		$("#names option:selected").each(function() {
-			var nameSelect = $(this).val();
-			var dataGraph2 = [];
-			var obj = soapResponseData.toJSON().Body;
-			var returnval = obj.getSessionSimpleDataSetResponse.return;
-			jQuery.each(returnval.data, function(i, ipos) {
-				var vars = JSON.parse(ipos);
-				var tickSealedTime = vars.sealed_time;
-				jQuery.each(vars.vars, function(j, jpos) {
-					if (nameSelect == jpos.name) {
-						dataGraph2.push([tickSealedTime/100, jpos.value]);
-						return false;
-					}
-				});
-			});
-			dataGraph.push( {label: nameSelect, data: dataGraph2} );
-		});
-	}
-	
-	function getGraphDataDebug() {
-		var nameSelect = $("#names").val();
-		dataGraph = [];
-		jQuery.each(soapResponseData.return, function(i, ipos) {
-			var tickSealedTime = ipos.sealed_time;
-			jQuery.each(ipos.vars, function(j, jpos) {
-				if (nameSelect == jpos.name) {
-					dataGraph.push([tickSealedTime/100, jpos.value]);
-					return false;
-				}
-			});	
-		});
-	}
-	
-	/**************************************************************
-	
-	SOAP SERVICES: getSessionSimpleDataSet, getSessionInfo 
-	PARAMETER: SessionID (Experimental)
-	
-	Description:	Get data (JSON) from the experimental session
-					Get info for experimental data !!! (if no data)
-	
-	**************************************************************/
-	function getExperimentalSessionInfoFunction(soapResponse,parameters){
-		soapResponseData = soapResponse;
-		var obj = soapResponseData.toJSON().Body;
-		var returnval = obj.getSessionInfoResponse.return;
-		// If return value (sessionId property) is defined --> data is available for the session
-		if (typeof returnval.sessionid == "undefined"){
-			// Inform to user deleting the access button
-			$("#sessionsTable td").filter(function() {
-        		if ($(this).text() == parameters.sessionId){;
-					$('td:last', $(this).parents('tr')).text("No data");
-				}
-    		});
-		}
-	}
-	
-	function getSessionSimpleDataSetFunction(soapResponse,parameters) {
-		$( "#sessioninfo" ).removeClass("hidden");
-		soapResponseData = soapResponse;
-		var obj = soapResponseData.toJSON().Body;
-		var returnval = obj.getSessionSimpleDataSetResponse.return;
-		jQuery.each(returnval.data, function(i, ipos) {
-			var vars = JSON.parse(ipos);
-			jQuery.each(vars.vars, function(j, jpos) {
-				var found = $.inArray(jpos.name, names) > -1;
-				if (!found) {
-					names.push(jpos.name);
-				}
-			});
-		});
-		jQuery.each(names, function(i, name) {
-			$('#names').append('<option value=' + name + '>' + name + '</option>');
-		});
-		$('#names').multiselect('rebuild');
-	}
-	
-	/*function getSessionSimpleDataSetFunctionDebug(data) {
-		//var jsonText = JSON.stringify(returnval);
-		jQuery.each(soapResponseData.return, function(i, ipos) {
-			maxtimesession = ipos.sealed_time;
-			jQuery.each(ipos.vars, function(j, jpos) {
-				var found = $.inArray(jpos.name, names) > -1;
-				if (!found) {
-					names.push(jpos.name);
-				}
-			});	
-		});
-		$('#maxtimesession').val(maxtimesession);
-		jQuery.each(names, function(i, name) {
-			$('#names').append('<option value=' + name + ' selected=selected>' + name + '</option>');
-		});
-	}*/
-
-	function loadSoapExperimentSessionsWS(method,parameters,successfunction) {
-		$("#divloading").removeClass("hidden");
-		$.soap({
-			url: 'http://lab.scc.uned.es:8080/axis2/services/SessionDataManagementWS/',
-			method: method,
-			// method: 'getSampleTimeSession',
-			//method: 'getDataSet',
-			
-			appendMethodToURL: true, 
-			
-			params: parameters,
-
-			namespaceQualifier: 'data',                     // used as namespace prefix for all elements in request (optional)
-			namespaceURL: 'http://data.sessions.ws.related.scc.uned.es',
-			
-			success: function (soapResponse) {
-				$("#divloading").addClass("hidden");
-				eval(successfunction(soapResponse,this.data));
-			},		
-			error: function (soapResponse) {
-				// show error
-				$("#divloading").addClass("hidden");
-				alert(soapResponse);
-				document.write("ERROR: " + soapResponse);
-			},
-			// Async (default= false)
-			async: true,
-			// debugging
-			enableLogging: true   
-		});
-	}
-	
-	
-	/*function loadSoapExperimentSessionsWS_New(method,parameters,successfunction) {
-		$("#divloading").removeClass("hidden");
-		$.soap({
-    		url: 'http://lab.scc.uned.es:8080/axis2/services/SessionDataManagementWS/',
-			method: method,
-			// method: 'getSampleTimeSession',
-			//method: 'getDataSet',
-			
-			appendMethodToURL: true, 
-			
-			params: parameters,
-
-			namespaceQualifier: 'data',                     // used as namespace prefix for all elements in request (optional)
-			namespaceURL: 'http://data.sessions.ws.related.scc.uned.es',
-			// debugging
-			enableLogging: true
-		}).done(function(data, textStatus, jqXHR) {
-    		$("#divloading").addClass("hidden");
-			eval(successfunction(jqXHR.responseText));
-		}).fail(function(jqXHR, textStatus, errorThrown) {
-    		// show error
-			$("#divloading").addClass("hidden");
-			alert(jqXHR.responseText);
-			document.write("ERROR: " + jqXHR.responseText);
-		});
-	}*/
-	
-	/**************************************************************
-	
-	SOAP SERVICES: getExperimentSessions, getSessionInfo 
-	PARAMETER: SessionID (Work session)
-	
-	Description: Populate experimental sessions (ID) related to a work
-				session
-	
-	**************************************************************/
-	function getSessionInfoFunction(soapResponse,parameters){
-		var obj = soapResponse.toJSON().Body;
-		var session = obj.getSessionInfoResponse.return;
-		if (typeof session == "object"){
-			// Present data to user
-			row = "<tr><td>";
-			row += session.systemName;
-			row += "</td>";
-			row += '<td class="text-center">' +  session.user + '</td>';
-			// To be filled...
-			row += '<td class="text-center" id="experiment-name">' +  'experiment name' + '</td>';
-			var startDate = new Date(session.startDate);
-			row += '<td class="text-center">' + startDate.toLocaleString() + '</td>';
-			var stopDate = new Date(session.stopDate); //Date.parse(session.stopDate);
-			row += '<td class="text-center">' + stopDate.toLocaleString() + '</td>';
-			row += '</tr>';
-			row_object = $(row);
-			$('#sessionsInformationTable').append(row_object);
-			
-			// Get system Id and set the global script variable 'systemId'
-			loadSoapManageSystemsWS('getSystemID',{ip:session.IP, name:session.systemName}, getSystemIdFunction);
-		}
-	}
-	
-	function getExperimentSessionsFunction(soapResponse,parameters) {
-		// soapResponseData = soapResponse;
-		var obj = soapResponse.toJSON().Body;
-		var returnval = obj.getExperimentSessionsResponse.return;
-		var experiment_sessions = new Array();
-		
-		
-		// Check return value
-		if ($.isArray(returnval)){
-			// Two or more sessions
-			experiment_sessions = returnval;
-		} else if (typeof returnval == "object"){
-			// Only one session
-			experiment_sessions.push(returnval);
-		} // Otherwise no experiemntal sessions are associated
-		
-		var experiment_name = "";
-		jQuery.each(experiment_sessions, function(i, session) {
-			// Its the same for every session
-			experiment_name = session.experimentName;
-			// Add the session ID to table!!!
-			// More data to add
-			// Add the row !!!
-			row = "<tr><td class='sessionid'>";
-			row += session.ID;
-			row += "</td>";
-			row += '<td class="text-center"><img src="img/finished.' + session.sessionFinished + '.png"/></td>';
-			var startDate = new Date(session.startDate); // Date.parse(session.startDate);
-			row += '<td class="text-center">' + startDate.toLocaleString() + '</td>';
-			var stopDate = new Date(session.stopDate); //Date.parse(session.stopDate);
-			row += '<td class="text-center">' + stopDate.toLocaleString() + '</td>';
-			row += '<td class="text-center"><a href="javascript:;" class="btn btn-xs btn-primary">';
-			row += '<i class="btn-icon-only fa fa-check selectsession">';
-			row += '</i>';
-			row += '</a></td></tr>';
-			row_object = $(row);
-			$('#sessionsTable').append(row_object);
-			
-			// check if experiment session has data session associated
-			loadSoapExperimentSessionsWS('getSessionInfo',{ sessionId: session.ID },getExperimentalSessionInfoFunction);
-		});
-		
-		/// Add the handler
-		// Click handler related to the associated session
-		$(".selectsession").click(function() {
-			var sessionIDval = $(this).closest("tr").find(".sessionid").text();
-			var parameters = { sessionId: sessionIDval };
-			// Check for session data in experimental data service
-			// If yes, data will be loaded
-			// otherwise nothing to do (message?)
-			$('#names option').remove();
-			loadSoapExperimentSessionsWS('getSessionSimpleDataSet',parameters,getSessionSimpleDataSetFunction);
-		});
-		
-		// Fill the id="experiment-name"
-		// created on sessionInfoTable
-		$('#experiment-name').html(experiment_name);
-		
-		// Get XML file in order to buid experimental interface in "live" button
-		// systemId is a global variable 
-		loadSoapXmlWS('getXmlConfFile',{systemId:systemId},getXmlConfFileSuccessFunction);
-		
-	}
-	
-	
-
-	function loadSoapSessionsWS(method,parameters,successfunction) {
-		var result;
-		$("#divloading").removeClass("hidden");
-		$.soap({
-			url: 'http://lab.scc.uned.es:8080/axis2/services/SessionsWS_v2/',
-			method: method,
-			// method: 'getSampleTimeSession',
-			//method: 'getDataSet',
-			
-			appendMethodToURL: true, 
-			
-			params: parameters,
-
-			namespaceQualifier: 'sessions',                     // used as namespace prefix for all elements in request (optional)
-			namespaceURL: 'http://sessions.ws.web.related.scc.uned.es',
-			
-			success: function (soapResponse) {
-				$("#divloading").addClass("hidden");
-				eval(successfunction(soapResponse,this.data));
-			},		
-			error: function (soapResponse) {
-				// show error
-				$("#divloading").addClass("hidden");
-				alert(soapResponse);
-				document.write("ERROR: " + soapResponse);
-			},
-			// debugging
-			enableLogging: true   
-		});
-	}
-	
-	/**************************************************************
-	
-	SOAP SERVICES: getSystemID
-	PARAMETERS: Ip and Name (System)
-	
-	Description: Returns ID of Lab. Needed for get lab structure !!!
-	
-	**************************************************************/
-	
-	function getSystemIdFunction(soapResponse,parameters){
-		var obj = soapResponse.toJSON().Body;
-		var system = obj.getSystemIDResponse.return;
-		if (typeof system == "string"){
-			// Set global variable 'systemId'
-			systemId = system;
-		}
-	}
-	
-	function loadSoapManageSystemsWS(method,parameters,successfunction) {
-		var result;
-		$("#divloading").removeClass("hidden");
-		$.soap({
-			url: 'https://lab.scc.uned.es:8443/axis2/services/ManageSystemsWS/',
-			method: method,
-			// method: 'getSampleTimeSession',
-			//method: 'getDataSet',
-			
-			appendMethodToURL: true, 
-			
-			params: parameters,
-
-			namespaceQualifier: 'systems',                     // used as namespace prefix for all elements in request (optional)
-			namespaceURL: 'http://systems.ws.related.scc.uned.es',
-			
-			success: function (soapResponse) {
-				$("#divloading").addClass("hidden");
-				eval(successfunction(soapResponse,this.data));
-			},		
-			error: function (soapResponse) {
-				// show error
-				$("#divloading").addClass("hidden");
-				alert(soapResponse);
-				document.write("ERROR: " + soapResponse);
-			},
-			// debugging
-			enableLogging: true,
-			// Soap Security Header
-			wss: {
-        		username: 'related_developer',
-        		password: 'L+Fy/dOUQ4pLP5JTY92qEw=='
-   	 		}  
-		});
-	}
-	
-	/**************************************************************
-	
-	SOAP SERVICES: getXmlConfFile
-	PARAMETERS: ID(System)
-	
-	Description: Returns XML specification of Lab.
-	
-	**************************************************************/
-	function getXmlConfFileSuccessFunction(soapResponse, soapParams){
-		var return_value = soapResponse.toJSON().Body.getXmlConfFileResponse.return;
-		xmlContent = return_value.xmlConfFile;
-		if (typeof xmlContent != "undefined"){
-			xmlDoc = $.parseXML(xmlContent);
-			$xml = $( xmlDoc );
-			// Find experiments
-			var $experiments = $xml.find("experiment");
-			// Get experiment name from UI
-			experiment_name = $('#experiment-name').html();
-			// Locate experiment-name in XML
-			// to get graphs info and defined web views !!!
-			$experiments.each(function(){
-			    var name = $(this).attr('name');
-				if (name==experiment_name){
-					// Set lab vars, graphs info and webviews
-					varsInfo = getVarsInfos( $(this), $xml);
-					graphs_info = getGraphInfos($(this),$xml);
-					views_info = getViewsInfo($(this),$xml);
-				}
-			});
-			
-		} else {
-			$('#xmlConfFile').html("No xml defined...");
-		}
-		// For the live view !!!
-		// buildUI(systemId,viewObjectsArray,graphInfoObjectsArray);
-	}
-	
-	function loadSoapXmlWS(method,parameters,successfunction) {
-		var result;
-		$("#divloading").removeClass("hidden");
-		$.soap({
-			url: 'http://lab.scc.uned.es:8080/axis2/services/XMLLoaderWS/',
-			method: method,
-			// method: 'getSampleTimeSession',
-			//method: 'getDataSet',
-			
-			appendMethodToURL: true, 
-			
-			params: parameters,
-
-			namespaceQualifier: 'xmlconffileloader',                     // used as namespace prefix for all elements in request (optional)
-			namespaceURL: 'http://xmlconffileloader.ws.web.related.scc.uned.es',
-			
-			success: function (soapResponse) {
-				$("#divloading").addClass("hidden");
-				eval(successfunction(soapResponse,this.data));
-			},		
-			error: function (soapResponse) {
-				// show error
-				$("#divloading").addClass("hidden");
-				alert(soapResponse);
-				document.write("ERROR: " + soapResponse);
-			},
-			// debugging
-			enableLogging: true  
-		});
-	}
-	
-	/**************************************************************
-		AUXILIAR PARSING XML FUNCTION --> Variables Info
-	***************************************************************/
-	
-	function getVarsInfos($experiment_node,$system_node){
-		varsInfoArray = new Array();
-		// Find the view name on root <system>
-		$run_modules = $experiment_node.find('run');
-		$run_modules.each(function(index,element){
-			// Find <modules> tags inside the system node
-			// corresponding to the module name
-			module_name = $(element).attr('module');
-			module_type = $(element).attr('type');
-			remote_system = null;
-			if (module_type=="remote"){
-				// Remote module !!!
-				remote_system = $(this).attr('source');
-			}
-					
-			// All modules defined in system !!!
-			$modules = $system_node.find('module');
-			$modules.each(function(index, element) {
-                if ( $(element).attr('name') == module_name ){
-					// Add all the vars to the array
-					$vars = $(element).find('var');
-					$vars.each(function(index, element) {
-                        variable_json = $.xml2json(element);
-						variable = new Object();
-						variable.name = variable_json.name;
-						variable.description = variable_json.text;
-						variable.type = variable_json.type;
-						variable.max = variable_json.max;
-						variable.min = variable_json.min;
-						variable.initial = variable_json.initial;
-						variable.units = variable_json.units;
-						variable.module = module_name;
-						if (remote_system!=null){
-							variable.system = remote_system; 
-						}
-						varsInfoArray.push(variable);
-                    });
-				}
-            });
-		});
-		return varsInfoArray;
-	}
-	
-	
-	/**************************************************************
-		AUXILIAR PARSING XML FUNCTION --> Original Graph Info
-	***************************************************************/
-	
-	function getGraphInfos($experiment_node,$system_node){
-		var paintObject;
-		var paintObjectsArray = new Array();
-		// Find the view name on root <system>
-		var $run_modules = $experiment_node.find('run');
-		$run_modules.each(function(){
-			// Find <paint> tags inside the run tag	
-			$paint_in_run_modules = $(this).find('paint');		
-			// Build the graph info array to return...
-			$paint_in_run_modules.each(function(index,element) {
-                var paintObject = new Object();
-				paintObject.module = $(element).parent().attr('module');
-				// Module can be remote. Atributes are defined like this
-				// type="remote" source="//62.204.199.218:1099/D71F73A7AE4E112B5DF4172E60E059E5"
-				// Default value
-				paintObject.isRemoteModule = false;
-				if ( typeof $(this).attr('type') != "undefined"){
-					moduleType = $(this).attr('type');
-					if (moduleType=="remote"){
-						// Remote module !!!
-						paintObject.isRemoteModule = true;
-						paintObject.remoteSystem = $(this).attr('source');
-					}
-				}
-				// names and colors!!!
-				paintObject.names = ($(this).attr('names')).split(",");
-				paintObject.colors = ($(this).attr('colors')).split(",");
-				paintObjectsArray.push(paintObject);	
-				// END of each of paint tags
-            });
-			// END of each of run modules
-		});
-		return paintObjectsArray;
-	}
-	
-	/*********************************************************
-		AUXILIAR PARSING XML FUNCTION --> Original Web Views
-	*********************************************************/
-	function getViewsInfo($experiment_node,$system_node){
-		views_info_array = new Array();
-		// Web views defined in the experiment
-		$webViews = $experiment_node.find('openweb');
-		$webViews.each(function(index,element){
-			name = $(element).attr('name');
-			// Find all views in <system>
-			$views_def = $system_node.find('webview');
-			// For every one included in the experiment
-			// build an object
-			$views_def.each(function(index,element){
-				var vname = $(element).attr('name');
-				if (vname==name){
-					viewObject = new Object();
-					viewObject.name = vname;
-					viewObject.description = $(element).attr('description');
-					viewObject.html_dir = $(element).attr('html_dir');
-					viewObject.html_page = $(element).attr('html_page');
-					views_info_array.push(viewObject);
-				}
-			});
-			
-		});
-		return views_info_array;
-	}
-	
-	/*********************************************************
-		BUILD "live" UI with graphs and views !!!
-	*********************************************************/
-	
-	function buildUI(systemId, viewObjectsArray, graphInfoObjectsArray){
-		// Sample function
-		var baseLocation = "http://lab.scc.uned.es/related/jar_files/webviews/" + systemId + "/";
-		
-		if (viewObjectsArray.length>0){
-			for (i=0; i<viewObjectsArray.length; i++){
-				var url=baseLocation + viewObjectsArray[i].html_page;
-				// Build an iframe
-				iframe = "<iframe width='600' height='800' sandbox='allow-scripts allow-top-navigation allow-same-origin' frameborder='0' src='" + url + "'></iframe>"
-				$(iframe).attr('src',url);
-				$('#webviews').append(iframe);
-			}
-		}
-		
-		 
-	}
-	
-	</script>
+	<script src="js/jquery-latest.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/jquery.flot.min.js"></script>
+	<script type='text/javascript' src='js/jquery.soap.js'></script>
+	<script type='text/javascript' src='js/jquery.xml2json.js'></script>
+	<script type="text/javascript" src="js/bootstrap-multiselect.js"></script>
+	<script type="text/javascript" src="js/main.js"></script>
   </body>
 </html>
