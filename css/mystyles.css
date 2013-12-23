@@ -315,7 +315,9 @@ h6 {
 		padding:20px;
 	}
 	
-	
+	#sessionbuttons {
+		margin:10px;
+	}
 	#sessionbuttons h3 {
 	  top: 0;
 	  position: relative;
