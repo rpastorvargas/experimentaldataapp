@@ -236,7 +236,6 @@ function paintGraph() {
 	});
 }
 
-var names = [];
 var soapResponseData;
 var maxtimesession;
 var dataGraph = [];
@@ -305,7 +304,8 @@ function getExperimentalSessionInfoFunction(soapResponse,parameters){
 	}
 }
 
-function getSessionSimpleDataSetFunction(soapResponse,parameters) {
+/*function getSessionSimpleDataSetFunction(soapResponse,parameters) {
+	var names = [];
 	$( "#sessioninfo" ).removeClass("hidden");
 	soapResponseData = soapResponse;
 	var obj = soapResponseData.toJSON().Body;
@@ -319,30 +319,59 @@ function getSessionSimpleDataSetFunction(soapResponse,parameters) {
 			}
 		});
 	});
+	var res = '';
 	jQuery.each(names, function(i, name) {
-		$('.multipleselect').append('<option value=' + name + '>' + name + '</option>');
+		res = res + '<option value=' + name + '>' + name + '</option>';
+		//$('.multipleselect').append('<option value=' + name + '>' + name + '</option>');
 	});
+	$('.multipleselect').append('<optgroup label="Mathematics">' + res + '</optgroup>');
+	$('.multipleselect').multiselect('rebuild');
+}
+*/
+
+function getSessionSimpleDataSetFunction(soapResponse,parameters) {
+	var names = [];
+	var names2 = [];
+	$( "#sessioninfo" ).removeClass("hidden");
+	soapResponseData = soapResponse;
+	var obj = soapResponseData.toJSON().Body;
+	var returnval = obj.getSessionSimpleDataSetResponse.return;
+	jQuery.each(returnval.data, function(i, ipos) {
+		var vars = JSON.parse(ipos);
+		jQuery.each(vars.vars, function(j, jpos) {
+			var found = $.inArray(jpos.moduleName, names) > -1;
+			if (!found) {
+				names.push(jpos.moduleName);
+				names2 = [];
+				names2.push(jpos.name);
+				names[jpos.moduleName] = names2;
+			}
+			else {
+				names2 = names[jpos.moduleName];
+				var found2 = $.inArray(jpos.name, names2) > -1;
+				if (!found2) {
+					names2.push(jpos.name);
+					names[jpos.moduleName] = names2;
+				}
+			}
+		});
+	});
+	var res = '';
+	jQuery.each(names, function(i, name) {
+		console.log(i);
+		console.log(name);
+		console.log(names[name]);
+		jQuery.each(names[name], function(j, name2) {
+			res = res + '<option value=' + name2 + '>' + name2 + '</option>';
+		});
+		$('.multipleselect').append('<optgroup label="' + name + '">' + res + '</optgroup>');
+		//$('.multipleselect').append('<option value=' + name + '>' + name + '</option>');
+	});	
 	$('.multipleselect').multiselect('rebuild');
 }
 
-/*function getSessionSimpleDataSetFunctionDebug(data) {
-	//var jsonText = JSON.stringify(returnval);
-	jQuery.each(soapResponseData.return, function(i, ipos) {
-		maxtimesession = ipos.sealed_time;
-		jQuery.each(ipos.vars, function(j, jpos) {
-			var found = $.inArray(jpos.name, names) > -1;
-			if (!found) {
-				names.push(jpos.name);
-			}
-		});	
-	});
-	$('#maxtimesession').val(maxtimesession);
-	jQuery.each(names, function(i, name) {
-		$('#names').append('<option value=' + name + ' selected=selected>' + name + '</option>');
-	});
-}*/
-
-function loadSoapExperimentSessionsWS(method,parameters,successfunction) {
+function loadSoapExperimentSessionsWS(method,parameters,successfunction,hideloading) {
+	hideloading = typeof hideloading !== 'undefined' ? hideloading : 1;
 	$("#divloading").removeClass("hidden");
 	$.soap({
 		url: 'http://lab.scc.uned.es:8080/axis2/services/SessionDataManagementWS/',
@@ -358,12 +387,16 @@ function loadSoapExperimentSessionsWS(method,parameters,successfunction) {
 		namespaceURL: 'http://data.sessions.ws.related.scc.uned.es',
 		
 		success: function (soapResponse) {
-			$("#divloading").addClass("hidden");
+			if (hideloading) {
+				$("#divloading").addClass("hidden");
+			}
 			eval(successfunction(soapResponse,this.data));
 		},		
 		error: function (soapResponse) {
 			// show error
-			$("#divloading").addClass("hidden");
+			if (hideloading) {
+				$("#divloading").addClass("hidden");
+			}
 			document.write("ERROR: " + soapResponse);
 		},
 		// Async (default= false)
@@ -372,34 +405,6 @@ function loadSoapExperimentSessionsWS(method,parameters,successfunction) {
 		enableLogging: true   
 	});
 }
-
-
-/*function loadSoapExperimentSessionsWS_New(method,parameters,successfunction) {
-	$("#divloading").removeClass("hidden");
-	$.soap({
-		url: 'http://lab.scc.uned.es:8080/axis2/services/SessionDataManagementWS/',
-		method: method,
-		// method: 'getSampleTimeSession',
-		//method: 'getDataSet',
-		
-		appendMethodToURL: true, 
-		
-		params: parameters,
-
-		namespaceQualifier: 'data',                     // used as namespace prefix for all elements in request (optional)
-		namespaceURL: 'http://data.sessions.ws.related.scc.uned.es',
-		// debugging
-		enableLogging: true
-	}).done(function(data, textStatus, jqXHR) {
-		$("#divloading").addClass("hidden");
-		eval(successfunction(jqXHR.responseText));
-	}).fail(function(jqXHR, textStatus, errorThrown) {
-		// show error
-		$("#divloading").addClass("hidden");
-		alert(jqXHR.responseText);
-		document.write("ERROR: " + jqXHR.responseText);
-	});
-}*/
 
 /**************************************************************
 
@@ -484,13 +489,30 @@ function getExperimentSessionsFunction(soapResponse,parameters) {
 		$('#names option').remove();
 		visibleWidgetSessions($('.marketing .button-icon-minimize'),true);
 		$('#sessionselected').html(sessionIDval);
-		loadSoapExperimentSessionsWS('getSessionSimpleDataSet',parameters,getSessionSimpleDataSetFunction);
+		$('#sessionid').val(sessionIDval);
+		
+		loadSoapExperimentSessionsWS('getSessionSimpleDataSet',parameters,getSessionSimpleDataSetFunction,1);
+		
+		loadSoapExperimentSessionsWS('getMaxTimeSession',parameters,getMaxTimeSessionFunction,0);
+		
+		loadSoapExperimentSessionsWS('getSampleTimeSession',parameters,getSampleTimeSessionFunction,0);
 	});
 	
 	// Fill the id="experiment-name"
 	// created on sessionInfoTable
 	$('#experiment-name').html(experiment_name);
-	
+}
+
+function getMaxTimeSessionFunction(soapResponse) {
+	var obj = soapResponse.toJSON().Body;
+	var returnval = obj.getMaxTimeSessionResponse.return;
+	$('#maxtimesession').val(returnval);
+}
+
+function getSampleTimeSessionFunction(soapResponse) {
+	var obj = soapResponse.toJSON().Body;
+	var returnval = obj.getSampleTimeSessionResponse.return;
+	$('#sampletimesession').val(returnval);
 }
 
 function loadSoapSessionsWS(method,parameters,successfunction) {
