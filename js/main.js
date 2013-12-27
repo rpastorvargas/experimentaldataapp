@@ -61,7 +61,6 @@ $(document).ready(function() {
 	$("#sessioninfoinfo").show();
 	$("#sessioninfographics").hide();
 	$("#sessioninfolive").hide();
-
 	
 	$("#shortcutinfo").click(function() {
 		$(".shortcuts > a").removeClass("active");
@@ -261,7 +260,8 @@ function paintTable(label) {
 function getGraphData(selector) {
 	dataGraph = [];
 	$(selector).each(function() {
-		var nameSelect = $(this).val();
+		var nameSelect = $(this).val().split('_')[0];
+		var moduleName = $(this).parent().attr( "label" );
 		var dataGraph2 = [];
 		var obj = soapResponseData.toJSON().Body;
 		var returnval = obj.getSessionSimpleDataSetResponse.return;
@@ -269,7 +269,7 @@ function getGraphData(selector) {
 			var vars = JSON.parse(ipos);
 			var tickSealedTime = vars.sealed_time;
 			jQuery.each(vars.vars, function(j, jpos) {
-				if (nameSelect == jpos.name) {
+				if (nameSelect == jpos.name && moduleName == jpos.moduleName) {
 					dataGraph2.push([tickSealedTime/100, jpos.value]);
 					return false;
 				}
@@ -304,31 +304,6 @@ function getExperimentalSessionInfoFunction(soapResponse,parameters){
 	}
 }
 
-/*function getSessionSimpleDataSetFunction(soapResponse,parameters) {
-	var names = [];
-	$( "#sessioninfo" ).removeClass("hidden");
-	soapResponseData = soapResponse;
-	var obj = soapResponseData.toJSON().Body;
-	var returnval = obj.getSessionSimpleDataSetResponse.return;
-	jQuery.each(returnval.data, function(i, ipos) {
-		var vars = JSON.parse(ipos);
-		jQuery.each(vars.vars, function(j, jpos) {
-			var found = $.inArray(jpos.name, names) > -1;
-			if (!found) {
-				names.push(jpos.name);
-			}
-		});
-	});
-	var res = '';
-	jQuery.each(names, function(i, name) {
-		res = res + '<option value=' + name + '>' + name + '</option>';
-		//$('.multipleselect').append('<option value=' + name + '>' + name + '</option>');
-	});
-	$('.multipleselect').append('<optgroup label="Mathematics">' + res + '</optgroup>');
-	$('.multipleselect').multiselect('rebuild');
-}
-*/
-
 function getSessionSimpleDataSetFunction(soapResponse,parameters) {
 	var names = [];
 	var names2 = [];
@@ -340,70 +315,37 @@ function getSessionSimpleDataSetFunction(soapResponse,parameters) {
 		var vars = JSON.parse(ipos);
 		jQuery.each(vars.vars, function(j, jpos) {
 			var found = $.inArray(jpos.moduleName, names) > -1;
+			var nameoption = '';
 			if (!found) {
 				names.push(jpos.moduleName);
 				names2 = [];
-				names2.push(jpos.name);
+				var index = names.indexOf(jpos.moduleName);
+				var nameoption = jpos.name + '_' + index;
+				names2.push(nameoption);
 				names[jpos.moduleName] = names2;
 			}
-			else {
+			else {		
 				names2 = names[jpos.moduleName];
-				var found2 = $.inArray(jpos.name, names2) > -1;
+				var index = names.indexOf(jpos.moduleName);
+				var nameoption = jpos.name + '_' + index;
+				var found2 = $.inArray(nameoption, names2) > -1;
 				if (!found2) {
-					names2.push(jpos.name);
+					names2.push(nameoption);
 					names[jpos.moduleName] = names2;
 				}
 			}
 		});
 	});
 	var res = '';
+	$('.multipleselect').html('');
 	jQuery.each(names, function(i, name) {
-		console.log(i);
-		console.log(name);
-		console.log(names[name]);
+		res = "";
 		jQuery.each(names[name], function(j, name2) {
 			res = res + '<option value=' + name2 + '>' + name2 + '</option>';
 		});
 		$('.multipleselect').append('<optgroup label="' + name + '">' + res + '</optgroup>');
-		//$('.multipleselect').append('<option value=' + name + '>' + name + '</option>');
 	});	
 	$('.multipleselect').multiselect('rebuild');
-}
-
-function loadSoapExperimentSessionsWS(method,parameters,successfunction,hideloading) {
-	hideloading = typeof hideloading !== 'undefined' ? hideloading : 1;
-	$("#divloading").removeClass("hidden");
-	$.soap({
-		url: 'http://lab.scc.uned.es:8080/axis2/services/SessionDataManagementWS/',
-		method: method,
-		// method: 'getSampleTimeSession',
-		//method: 'getDataSet',
-		
-		appendMethodToURL: true, 
-		
-		params: parameters,
-
-		namespaceQualifier: 'data',                     // used as namespace prefix for all elements in request (optional)
-		namespaceURL: 'http://data.sessions.ws.related.scc.uned.es',
-		
-		success: function (soapResponse) {
-			if (hideloading) {
-				$("#divloading").addClass("hidden");
-			}
-			eval(successfunction(soapResponse,this.data));
-		},		
-		error: function (soapResponse) {
-			// show error
-			if (hideloading) {
-				$("#divloading").addClass("hidden");
-			}
-			document.write("ERROR: " + soapResponse);
-		},
-		// Async (default= false)
-		async: true,
-		// debugging
-		enableLogging: true   
-	});
 }
 
 /**************************************************************
@@ -467,7 +409,7 @@ function getExperimentSessionsFunction(soapResponse,parameters) {
 		row += '<td class="text-center">' + startDate.toLocaleString() + '</td>';
 		var stopDate = new Date(session.stopDate); //Date.parse(session.stopDate);
 		row += '<td class="text-center">' + stopDate.toLocaleString() + '</td>';
-		row += '<td class="text-center"><a href="javascript:;" class="btn btn-xs btn-primary">';
+		row += '<td class="text-center"><a href="javascript:;" class="btn btn-default btn-primary">';
 		row += '<i class="btn-icon-only fa fa-check selectsession">';
 		row += '</i>';
 		row += '</a></td></tr>';
@@ -515,15 +457,52 @@ function getSampleTimeSessionFunction(soapResponse) {
 	$('#sampletimesession').val(returnval);
 }
 
+/**************************************************************
+	
+	FUNCIONES GENERICAS LLAMADAS A WEB SERVICES
+
+**************************************************************/
+function loadSoapExperimentSessionsWS(method,parameters,successfunction,hideloading) {
+	hideloading = typeof hideloading !== 'undefined' ? hideloading : 1;
+	$("#divloading").removeClass("hidden");
+	$.soap({
+		url: 'http://lab.scc.uned.es:8080/axis2/services/SessionDataManagementWS/',
+		method: method,
+		
+		appendMethodToURL: true, 
+		
+		params: parameters,
+
+		namespaceQualifier: 'data',                     // used as namespace prefix for all elements in request (optional)
+		namespaceURL: 'http://data.sessions.ws.related.scc.uned.es',
+		
+		success: function (soapResponse) {
+			if (hideloading) {
+				$("#divloading").addClass("hidden");
+			}
+			eval(successfunction(soapResponse,this.data));
+		},		
+		error: function (soapResponse) {
+			// show error
+			if (hideloading) {
+				$("#divloading").addClass("hidden");
+			}
+			document.write("ERROR: " + soapResponse);
+		},
+		// Async (default= false)
+		async: true,
+		// debugging
+		enableLogging: true   
+	});
+}
+
 function loadSoapSessionsWS(method,parameters,successfunction) {
 	var result;
 	$("#divloading").removeClass("hidden");
 	$.soap({
 		url: 'http://lab.scc.uned.es:8080/axis2/services/SessionsWS_v2/',
 		method: method,
-		// method: 'getSampleTimeSession',
-		//method: 'getDataSet',
-		
+
 		appendMethodToURL: true, 
 		
 		params: parameters,
