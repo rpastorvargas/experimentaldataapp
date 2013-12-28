@@ -375,6 +375,9 @@ function getSessionInfoFunction(soapResponse,parameters){
 		row += '</tr>';
 		row_object = $(row);
 		$('#sessionsInformationTable').append(row_object);
+		
+		// Get system Id and set the global script variable 'systemId'
+        loadSoapManageSystemsWS('getSystemID',{ip:session.IP, name:session.systemName}, getSystemIdFunction);
 	}
 }
 
@@ -443,18 +446,24 @@ function getExperimentSessionsFunction(soapResponse,parameters) {
 	// Fill the id="experiment-name"
 	// created on sessionInfoTable
 	$('#experiment-name').html(experiment_name);
+	
+	// Populate info about lab
+	// Get XML file in order to buid experimental interface in "live" button
+    // systemId is a global variable  defined in related-ws-xml-js
+	// and need the #experiment_name component to create original structures
+    loadSoapXmlWS('getXmlConfFile',{systemId:systemId},getXmlConfFileSuccessFunction);
 }
 
 function getMaxTimeSessionFunction(soapResponse) {
 	var obj = soapResponse.toJSON().Body;
 	var returnval = obj.getMaxTimeSessionResponse.return;
-	$('#maxtimesession').val(returnval);
+	$('#maxtimesession').val(returnval/1000.0);
 }
 
 function getSampleTimeSessionFunction(soapResponse) {
 	var obj = soapResponse.toJSON().Body;
 	var returnval = obj.getSampleTimeSessionResponse.return;
-	$('#sampletimesession').val(returnval);
+	$('#sampletimesession').val(returnval/1000.0);
 }
 
 /**************************************************************

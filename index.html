@@ -156,13 +156,13 @@
 										</div>
 										<div class="col-sm-4">
 										  <div class="form-group">
-											<label for="maxtimesession" class="control-label">Max Time Session</label>
+											<label for="maxtimesession" class="control-label">Max Time Session (seconds)</label>
 											<input type="text" class="form-control" id="maxtimesession" placeholder="Max Time Session" readonly>
 										  </div>
 										</div>
 										<div class="col-sm-4">
 										  <div class="form-group">
-											<label for="sampletimesession" class="control-label">Sample Time Session</label>
+											<label for="sampletimesession" class="control-label">Sample Time Session (seconds)</label>
 											<input type="text" class="form-control" id="sampletimesession" placeholder="Sample Time Session" readonly>
 										  </div>
 										</div>
@@ -194,7 +194,7 @@
 					</div>
 				</div> <!-- /row -->
 				<div id="sessioninfolive" class="row">
-					<div class="col-sm-12">
+					<div class="col-sm-6">
 						<div class="widget">
 							<div class="widget-header">
 								<i class="fa fa-signal"></i>
@@ -224,6 +224,11 @@
 							</div>
 						</div>
 					</div>
+                    <div class="col-sm-6">
+                    	<!-- Only an example, remove and generate a tab based control o similar -->
+                    	<div id="web_video_container">
+                        </div>
+                    </div>
 				</div> <!-- /row -->
 			</div>
 		</div>
@@ -279,5 +284,6 @@
 	<script type='text/javascript' src='js/jquery.xml2json.js'></script>
 	<script type="text/javascript" src="js/bootstrap-multiselect.js"></script>
 	<script type="text/javascript" src="js/main.js"></script>
+    <script type="text/javascript" src="js/related-ws-xml.js"></script>
   </body>
 </html>
