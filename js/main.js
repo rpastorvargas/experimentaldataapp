@@ -341,7 +341,7 @@ function getSessionSimpleDataSetFunction(soapResponse,parameters) {
 	jQuery.each(names, function(i, name) {
 		res = "";
 		jQuery.each(names[name], function(j, name2) {
-			res = res + '<option value=' + name2 + '>' + name2 + '</option>';
+			res = res + '<option value=' + name2 + '>' + name2.split('_')[0] + '</option>';
 		});
 		$('.multipleselect').append('<optgroup label="' + name + '">' + res + '</optgroup>');
 	});	
