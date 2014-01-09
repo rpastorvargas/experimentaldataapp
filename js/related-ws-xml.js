@@ -73,7 +73,7 @@ function getXmlConfFileSuccessFunction(soapResponse, soapParams){
 	var return_value = soapResponse.toJSON().Body.getXmlConfFileResponse.return;
 	xmlContent = return_value.xmlConfFile;
 	if (typeof xmlContent != "undefined"){
-		xmlDoc = $.parseXML(xmlContent);
+		xmlDoc = $.parseXML(xmlContent.substring(3));
 		$xml = $( xmlDoc );
 		// Find experiments
 		var $experiments = $xml.find("experiment");
@@ -86,6 +86,7 @@ function getXmlConfFileSuccessFunction(soapResponse, soapParams){
 			if (name==experiment_name){
 				// Set lab vars, graphs info and webviews
 				varsInfo = getVarsInfos( $(this), $xml);
+				//paintMultipleSelect();
 				graphs_info = getGraphInfos($(this),$xml);
 				views_info = getViewsInfo($(this),$xml);
 				// Build the UI (example) !!!
@@ -99,6 +100,38 @@ function getXmlConfFileSuccessFunction(soapResponse, soapParams){
 	// For the live view !!!
 	// buildUI(systemId,viewObjectsArray,graphInfoObjectsArray);
 }
+
+function paintMultipleSelect() {
+	var modules = [];
+	var names = [];
+	jQuery.each(varsInfo, function(i, ipos) {
+		var found = $.inArray(ipos.module, modules) > -1;
+		if (!found) {
+			modules.push(ipos.module);
+			names = [];
+			names.push(ipos);
+			modules[ipos.module] = names;
+		}
+		else {
+			names = modules[ipos.module];
+			names.push(ipos);
+			modules[ipos.module] = names;
+		}
+	});
+	$('.multipleselect').html('');
+	jQuery.each(modules, function(i, ipos) {
+		var res = '';
+		jQuery.each(modules[ipos], function(j, jpos) {
+			var name = jpos.name + '(' + jpos.units + ')';
+			var value = jpos.name + '_' + jpos.module;
+			//res = res + '<option value=' + jpos.name + '_' + i + '>' + name + '</option>';
+			res = res + '<option value=' + value + '>' + name + '</option>';
+		});
+		$('.multipleselect').append('<optgroup label="' + ipos + '">' + res + '</optgroup>');
+	});
+	$('.multipleselect').multiselect('rebuild');
+}
+
 
 function loadSoapXmlWS(method,parameters,successfunction) {
 	var result;
@@ -190,7 +223,7 @@ function getGraphInfos($experiment_node,$system_node){
 	var $run_modules = $experiment_node.find('run');
 	$run_modules.each(function(){
 		// Find <paint> tags inside the run tag	
-		$paint_in_run_modules = $(this).find('paint');		
+		$paint_in_run_modules = $(this).find('paint');
 		// Build the graph info array to return...
 		$paint_in_run_modules.each(function(index,element) {
 			var paintObject = new Object();
@@ -210,7 +243,7 @@ function getGraphInfos($experiment_node,$system_node){
 			// names and colors!!!
 			paintObject.names = ($(this).attr('names')).split(",");
 			paintObject.colors = ($(this).attr('colors')).split(",");
-			paintObjectsArray.push(paintObject);	
+			paintObjectsArray.push(paintObject);
 			// END of each of paint tags
 		});
 		// END of each of run modules

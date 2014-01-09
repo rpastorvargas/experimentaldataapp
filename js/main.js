@@ -218,6 +218,7 @@ function getGraphDataInterval(selector,intervalIni,intervalEnd) {
 }
 
 function paintGraph() {
+	console.log('paintGraph');
 	getGraphData("#names option:selected");
 	//$.plot("#placeholder", dataGraph);
 	$.plot($("#placeholder"), dataGraph, {
@@ -229,7 +230,7 @@ function paintGraph() {
 		legend: {
 				labelFormatter: function(label, series){
 				//return '<a onclick="paintTable(\''+label+'\');">'+label+'</a>';
-				return '<a class="graphlegend">'+label+'</a>';
+				return '<a class="graphlegend">'+label.split('_')[0] +'</a>';
 			}
 		}
 	});
@@ -260,7 +261,10 @@ function paintTable(label) {
 function getGraphData(selector) {
 	dataGraph = [];
 	$(selector).each(function() {
-		var nameSelect = $(this).val().split('_')[0];
+		console.log($(this).val());
+		var nameSelect = $(this).val().split('(')[0].split('_')[0];
+		console.log('ENTRAMOS');
+		console.log(nameSelect);
 		var moduleName = $(this).parent().attr( "label" );
 		var dataGraph2 = [];
 		var obj = soapResponseData.toJSON().Body;
@@ -305,13 +309,15 @@ function getExperimentalSessionInfoFunction(soapResponse,parameters){
 }
 
 function getSessionSimpleDataSetFunction(soapResponse,parameters) {
-	var names = [];
-	var names2 = [];
+//	var names = [];
+//	var names2 = [];
 	$( "#sessioninfo" ).removeClass("hidden");
 	soapResponseData = soapResponse;
 	var obj = soapResponseData.toJSON().Body;
 	var returnval = obj.getSessionSimpleDataSetResponse.return;
-	jQuery.each(returnval.data, function(i, ipos) {
+	paintMultipleSelect();
+	//paintMultipleSelect();
+/*	jQuery.each(returnval.data, function(i, ipos) {
 		var vars = JSON.parse(ipos);
 		jQuery.each(vars.vars, function(j, jpos) {
 			var found = $.inArray(jpos.moduleName, names) > -1;
@@ -346,6 +352,8 @@ function getSessionSimpleDataSetFunction(soapResponse,parameters) {
 		$('.multipleselect').append('<optgroup label="' + name + '">' + res + '</optgroup>');
 	});	
 	$('.multipleselect').multiselect('rebuild');
+*/	
+	//$('.multipleselect').multiselect('rebuild');
 }
 
 /**************************************************************
