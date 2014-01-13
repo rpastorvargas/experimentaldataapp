@@ -73,7 +73,8 @@ function getXmlConfFileSuccessFunction(soapResponse, soapParams){
 	var return_value = soapResponse.toJSON().Body.getXmlConfFileResponse.return;
 	xmlContent = return_value.xmlConfFile;
 	if (typeof xmlContent != "undefined"){
-		xmlDoc = $.parseXML(xmlContent.substring(3));
+		//xmlDoc = $.parseXML(xmlContent.substring(3));
+		xmlDoc = $.parseXML(xmlContent);
 		$xml = $( xmlDoc );
 		// Find experiments
 		var $experiments = $xml.find("experiment");

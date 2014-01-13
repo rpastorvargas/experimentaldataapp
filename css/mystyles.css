@@ -492,3 +492,11 @@ h6 {
 .graphlegend {
 	cursor:pointer;
 }
+
+.liveContainer {
+	min-height:300px;
+}
+
+.hideElement {
+	display:none;
+}

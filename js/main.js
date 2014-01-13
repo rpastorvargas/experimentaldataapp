@@ -37,11 +37,13 @@ $(document).ready(function() {
 	// Populate experimental sessions from a work session
 	loadSoapSessionsWS("getExperimentSessions",{sessionID:workSessionId},getExperimentSessionsFunction);
 	
-	$("#generarGrafica").click(function() {
+	$("#generateGraph").click(function() {
 		paintGraph();
 	});
 	
-	$("#startlive").click(function() {
+	$("#startLive").click(function() {
+		$("#liveShowView").hide();
+		$("#liveGenerateGraph").show();
 		$('#progressbar').val(0);
 		$('#rangebar').val(0);
 		/*if (plot !== "undefined") {
@@ -50,6 +52,11 @@ $(document).ready(function() {
 		*/
 		paintGraphInterval();
 		updateProgressBar();
+	});
+	
+	$("#showViewLive").click(function() {
+		$("#liveGenerateGraph").hide();
+		$("#liveShowView").show();
 	});
 	
 	$('#rangebar').change( function() {

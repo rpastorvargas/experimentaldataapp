@@ -116,7 +116,8 @@
 				</div>
 			</div> <!-- /row -->
 			
-			<div id="sessioninfo" class="hidden">
+			<!--<div id="sessioninfo" class="hidden">-->
+			<div id="sessioninfo">
 				<div id="sessionbuttons" class="row">
 					<div class="col-sm-6">
 						<div class="shortcuts">
@@ -180,10 +181,15 @@
 								<h3>Gráficos</h3>
 							</div> <!-- /widget-header -->
 							<div class="widget-content clearfix">
-								<div>
-									<button id="generarGrafica" type="button" class="btn btn-primary">Generar gráfica</button>
-									<select id="names" multiple="multiple" class="multipleselect">
-									</select>
+								<div class="row">
+									<div class="col-sm-3">
+										<button id="generateGraph" type="button" class="btn btn-primary"><i class="fa fa-bar-chart-o"></i> Generate graph</button>
+										<select id="names" multiple="multiple" class="multipleselect">
+										</select>
+									</div>
+									<div class="col-sm-3">
+										<button id="saveXml" type="button" class="btn btn-primary"><i class="fa fa-save"></i> Save XML</button>
+									</div>
 								</div>
 							
 								<div class="demo-container">
@@ -201,24 +207,37 @@
 								<h3>Live</h3>
 							</div> <!-- /widget-header -->
 							<div class="widget-content clearfix">
-								<div>
-									<button id="startlive" type="button" class="btn btn-primary">Start</button>
-									<select id="names2" class="multipleselect">
-									</select>
+								<div class="row">
+									<div class="col-sm-6">
+										<button id="startLive" type="button" class="btn btn-primary"><i class="fa fa-bar-chart-o"></i> Generate Graph</button>
+										<select id="names2" class="multipleselect">
+										</select>
+									</div>
+									<div class="col-sm-6">
+										<button id="showViewLive" type="button" class="btn btn-primary"><i class="fa fa-th"></i> Show View</button>
+										<select id="names2" class="multipleselect">
+										</select>
+									</div>
 								</div>
-							
-								<div class="demo-container">
-									<div id="placeholder2" class="demo-placeholder"></div>
-								</div>
-								<div class="row text-center" style="text-align:center;">
-									<div class="html5-progress-bar col-sm-8 col-sm-offset-2">
-										<div class="progress-bar-wrapper">
-											<progress id="progressbar" value="0" max="100"></progress>
-											<span class="progress-value">0%</span>
+								<div class="liveContainer">
+									<div id="liveGenerateGraph" class="hideElement">
+										<div class="demo-container">
+											<div id="placeholder2" class="demo-placeholder"></div>
 										</div>
-										<div style="margin-top:-23px;">
-											<input id="rangebar" type="range" name="price" id="price" min="0" max="100" value="0" style="width:100%;" />
+										<div class="row text-center">
+											<div class="html5-progress-bar col-sm-8 col-sm-offset-2">
+												<div class="progress-bar-wrapper">
+													<progress id="progressbar" value="0" max="100"></progress>
+													<span class="progress-value">0%</span>
+												</div>
+												<div style="margin-top:-23px;">
+													<input id="rangebar" type="range" name="price" id="price" min="0" max="100" value="0" style="width:100%;" />
+												</div>
+											</div>
 										</div>
+									</div>
+									<div id="liveShowView" class="hideElement">
+										Show View
 									</div>
 								</div>
 							</div>
