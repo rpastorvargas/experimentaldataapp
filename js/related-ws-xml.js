@@ -89,6 +89,8 @@ function getXmlConfFileSuccessFunction(soapResponse, soapParams){
 				varsInfo = getVarsInfos( $(this), $xml);
 				//paintMultipleSelect();
 				graphs_info = getGraphInfos($(this),$xml);
+				console.log('graphs_info');
+				console.log(graphs_info);
 				views_info = getViewsInfo($(this),$xml);
 				// Build the UI (example) !!!
 				buildUI(systemId, views_info,graphs_info)
@@ -100,6 +102,26 @@ function getXmlConfFileSuccessFunction(soapResponse, soapParams){
 	}
 	// For the live view !!!
 	// buildUI(systemId,viewObjectsArray,graphInfoObjectsArray);
+}
+
+function paintViewsInfo() {
+	$('#sltShowView').html('');
+	var res = '';
+	jQuery.each(views_info, function(i, ipos) {
+		res = res + '<option value="' + ipos.html_dir + ipos.html_page + '">' + ipos.name + '</option>';
+	});
+	$('#sltShowView').append(res);
+	$('#sltShowView').multiselect('rebuild');
+}
+
+function paintLiveStart() {
+	$('#sltLiveStart').html('');
+	var res = '';
+	jQuery.each(graphs_info, function(i, ipos) {
+		res = res + '<option value="' + ipos.html_dir + ipos.html_page + '">' + ipos.name + '</option>';
+	});
+	$('#sltLiveStart').append(res);
+	$('#sltLiveStart').multiselect('rebuild');
 }
 
 function paintMultipleSelect() {

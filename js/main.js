@@ -1,6 +1,8 @@
 $(document).ready(function() {
 	
 	$('.multipleselect').multiselect();
+	//$('#sltLiveStart').multiselect();
+	$('#sltShowView').multiselect();
 	
 	window.onresize = function(event) {
 		if (typeof soapResponseData !== "undefined") {
@@ -185,7 +187,8 @@ function getData() {
 		data = data.slice(1);
 	}
 	
-	var nameSelect = $("#names2").val();
+	var nameSelect = $("#sltLiveStart").val();
+	console.log('getData');
 	console.log(nameSelect);
 	var obj = soapResponseData.toJSON().Body;
 	var returnval = obj.getSessionSimpleDataSetResponse.return;
@@ -204,6 +207,8 @@ function getData() {
 function getGraphDataInterval(selector,intervalIni,intervalEnd) {
 	dataGraph = [];
 	$(selector).each(function() {
+		console.log('getGraphDataInterval');
+		console.log($(this).val());		
 		var nameSelect = $(this).val().split('_')[0];
 		var dataGraph2 = [];
 		var obj = soapResponseData.toJSON().Body;
@@ -324,6 +329,7 @@ function getSessionSimpleDataSetFunction(soapResponse,parameters) {
 	var obj = soapResponseData.toJSON().Body;
 	var returnval = obj.getSessionSimpleDataSetResponse.return;
 	paintMultipleSelect();
+	paintViewsInfo();
 	//paintMultipleSelect();
 /*	jQuery.each(returnval.data, function(i, ipos) {
 		var vars = JSON.parse(ipos);
