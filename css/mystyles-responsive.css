@@ -75,10 +75,16 @@
     padding-bottom: 0;
     overflow: visible!important;
   }
+  
+	#logo {
+		float:left;
+	}
 }
 /* Medium devices (desktops, 992px and up) */
 @media (min-width: 992px) {
-  
+    #logo {
+		float:left;
+	}
 }
 /* Large devices (large desktops, 1200px and up) */
 @media (min-width: 1200px) {
@@ -86,5 +92,9 @@
   .subnavbar .container {
     padding-right: 0;
     padding-left: 0;
+  }
+  
+  #logo {
+	float:left;
   }
 }
