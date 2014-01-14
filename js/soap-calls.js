@@ -27,13 +27,12 @@ function loadSoapManageSystemsWS(method,parameters,successfunction) {
 	var url = 'https://lab.scc.uned.es:8443/axis2/services/ManageSystemsWS/';
 	var namespaceQualifier = 'systems';
 	var namespaceURL = 'http://systems.ws.related.scc.uned.es';
-	loadSoapExperimentSessionsSecurity(method,parameters,successfunction,true,url,namespaceQualifier,namespaceURL);
+	loadSoapExperimentSessionsSecurity(method,parameters,successfunction,url,namespaceQualifier,namespaceURL);
 }
 
 
-function loadSoapExperimentSessions(method,parameters,successfunction,hideloading,url,namespaceQualifier,namespaceURL,wss) {
+function loadSoapExperimentSessions(method,parameters,successfunction,hideloading,url,namespaceQualifier,namespaceURL) {
 	hideloading = typeof hideloading !== 'undefined' ? hideloading : 1;
-	var applysecurity = typeof wss !== 'undefined' ? wss : 1; 
 	$("#divloading").removeClass("hidden");
 	$.soap({
 		url: url,
@@ -66,11 +65,11 @@ function loadSoapExperimentSessions(method,parameters,successfunction,hideloadin
 	});
 }
 
-function loadSoapExperimentSessionsSecurity(method,parameters,successfunction) {
+function loadSoapExperimentSessionsSecurity(method,parameters,successfunction,url,namespaceQualifier,namespaceURL) {
 	var result;
 	$("#divloading").removeClass("hidden");
 	$.soap({
-		url: 'https://lab.scc.uned.es:8443/axis2/services/ManageSystemsWS/',
+		url: url,
 		method: method,
 		// method: 'getSampleTimeSession',
 		//method: 'getDataSet',
@@ -79,8 +78,8 @@ function loadSoapExperimentSessionsSecurity(method,parameters,successfunction) {
 		
 		params: parameters,
 
-		namespaceQualifier: 'systems',                     // used as namespace prefix for all elements in request (optional)
-		namespaceURL: 'http://systems.ws.related.scc.uned.es',
+		namespaceQualifier: namespaceQualifier,                     // used as namespace prefix for all elements in request (optional)
+		namespaceURL: namespaceURL,
 		
 		success: function (soapResponse) {
 			$("#divloading").addClass("hidden");
