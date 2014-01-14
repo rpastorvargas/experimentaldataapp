@@ -186,6 +186,7 @@ function getData() {
 	}
 	
 	var nameSelect = $("#names2").val();
+	console.log(nameSelect);
 	var obj = soapResponseData.toJSON().Body;
 	var returnval = obj.getSessionSimpleDataSetResponse.return;
 	var vars = JSON.parse(returnval.data[interval]);
@@ -203,7 +204,7 @@ function getData() {
 function getGraphDataInterval(selector,intervalIni,intervalEnd) {
 	dataGraph = [];
 	$(selector).each(function() {
-		var nameSelect = $(this).val();
+		var nameSelect = $(this).val().split('_')[0];
 		var dataGraph2 = [];
 		var obj = soapResponseData.toJSON().Body;
 		var returnval = obj.getSessionSimpleDataSetResponse.return;
