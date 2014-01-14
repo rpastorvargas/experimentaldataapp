@@ -1,6 +1,3 @@
-// JavaScript Document
-
-
 // Global variables
 var systemId;
 var varsInfo = null;
@@ -25,42 +22,6 @@ function getSystemIdFunction(soapResponse,parameters){
 	}
 }
 
-function loadSoapManageSystemsWS(method,parameters,successfunction) {
-	var result;
-	$("#divloading").removeClass("hidden");
-	$.soap({
-		url: 'https://lab.scc.uned.es:8443/axis2/services/ManageSystemsWS/',
-		method: method,
-		// method: 'getSampleTimeSession',
-		//method: 'getDataSet',
-		
-		appendMethodToURL: true, 
-		
-		params: parameters,
-
-		namespaceQualifier: 'systems',                     // used as namespace prefix for all elements in request (optional)
-		namespaceURL: 'http://systems.ws.related.scc.uned.es',
-		
-		success: function (soapResponse) {
-			$("#divloading").addClass("hidden");
-			eval(successfunction(soapResponse,this.data));
-		},		
-		error: function (soapResponse) {
-			// show error
-			$("#divloading").addClass("hidden");
-			alert(soapResponse);
-			document.write("ERROR: " + soapResponse);
-		},
-		// debugging
-		enableLogging: true,
-		// Soap Security Header
-		wss: {
-			username: 'related_developer',
-			password: 'L+Fy/dOUQ4pLP5JTY92qEw=='
-		}  
-	});
-}
-
 /**************************************************************
 
 SOAP SERVICES: getXmlConfFile
@@ -82,12 +43,14 @@ function getXmlConfFileSuccessFunction(soapResponse, soapParams){
 		experiment_name = $('#experiment-name').html();
 		// Locate experiment-name in XML
 		// to get graphs info and defined web views !!!
+		console.log('Entramos');
 		$experiments.each(function(){
 			var name = $(this).attr('name');
 			if (name==experiment_name){
 				// Set lab vars, graphs info and webviews
 				varsInfo = getVarsInfos( $(this), $xml);
 				//paintMultipleSelect();
+				console.log(varsInfo);
 				graphs_info = getGraphInfos($(this),$xml);
 				console.log('graphs_info');
 				console.log(graphs_info);
@@ -140,7 +103,7 @@ function paintMultipleSelect() {
 			names.push(ipos);
 			modules[ipos.module] = names;
 		}
-	});
+	});	
 	$('.multipleselect').html('');
 	jQuery.each(modules, function(i, ipos) {
 		var res = '';
@@ -153,38 +116,6 @@ function paintMultipleSelect() {
 		$('.multipleselect').append('<optgroup label="' + ipos + '">' + res + '</optgroup>');
 	});
 	$('.multipleselect').multiselect('rebuild');
-}
-
-
-function loadSoapXmlWS(method,parameters,successfunction) {
-	var result;
-	$("#divloading").removeClass("hidden");
-	$.soap({
-		url: 'http://lab.scc.uned.es:8080/axis2/services/XMLLoaderWS/',
-		method: method,
-		// method: 'getSampleTimeSession',
-		//method: 'getDataSet',
-		
-		appendMethodToURL: true, 
-		
-		params: parameters,
-
-		namespaceQualifier: 'xmlconffileloader',                     // used as namespace prefix for all elements in request (optional)
-		namespaceURL: 'http://xmlconffileloader.ws.web.related.scc.uned.es',
-		
-		success: function (soapResponse) {
-			$("#divloading").addClass("hidden");
-			eval(successfunction(soapResponse,this.data));
-		},		
-		error: function (soapResponse) {
-			// show error
-			$("#divloading").addClass("hidden");
-			alert(soapResponse);
-			document.write("ERROR: " + soapResponse);
-		},
-		// debugging
-		enableLogging: true  
-	});
 }
 
 /**************************************************************
@@ -277,6 +208,7 @@ function getGraphInfos($experiment_node,$system_node){
 /*********************************************************
 	AUXILIAR PARSING XML FUNCTION --> Original Web Views
 *********************************************************/
+
 function getViewsInfo($experiment_node,$system_node){
 	views_info_array = new Array();
 	// Web views defined in the experiment
@@ -320,5 +252,5 @@ function buildUI(systemId, viewObjectsArray, graphInfoObjectsArray){
 			$('#web_video_container').append(iframe);
 		}
 	}	
-	 
 }
+

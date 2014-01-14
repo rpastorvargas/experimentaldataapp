@@ -1,3 +1,32 @@
+// Global variables
+
+
+// VARIABLES GLOBALES APARTADO LIVE
+
+// Variable usada para definir el tiempo en el que nos encontramos
+var interval = 0;
+// Variable en la que guardamos nuestro objeto gráfica para establecer los datos en el timeout
+var plot;
+// Variable para ir metiendo en cada intervalo el dato correspondiente y ir desplazando
+var data = [];
+// Variable en la que guardamos el número de puntos que pintamos por muestra
+var	totalPoints = 200;
+// Variable que indica cada cuantos milisegundos ejecutamos nuestra función de SetInterval
+var updateInterval = 10;
+
+
+// VARIABLES GLOBALES APARTADO SOAP
+
+// Variable en la que guardamos el valor devuelto del método SOAP getExperimentalSessionInfo
+// para no tener que volver a cargar el dato
+var soapResponseData;
+// Variable en la que guardamos el máximo tiempo que tarda en cargar la sesión para luego utilizar
+// en la barra de desplazamiento
+var maxtimesession;
+// Variable en la que guardamos los datos de la gráfica para posteriormente pintarlos
+var dataGraph = [];
+
+
 $(document).ready(function() {
 	
 	$('.multipleselect').multiselect();
@@ -35,9 +64,9 @@ $(document).ready(function() {
 	workSessionId = "e4039c4e21d54708a9ea2d0a966ee1c0";
 	
 	// Populate the session Info table
-	loadSoapSessionsWS("getSessionInfo",{sessionId:workSessionId},getSessionInfoFunction);
+	loadSoapSessionsWS_v2("getSessionInfo",{sessionId:workSessionId},getSessionInfoFunction);
 	// Populate experimental sessions from a work session
-	loadSoapSessionsWS("getExperimentSessions",{sessionID:workSessionId},getExperimentSessionsFunction);
+	loadSoapSessionsWS_v2("getExperimentSessions",{sessionID:workSessionId},getExperimentSessionsFunction);
 	
 	$("#generateGraph").click(function() {
 		paintGraph();
@@ -137,8 +166,6 @@ function updateProgressBar() {
 	}, time);
 }
 
-var interval = 0;
-var plot;
 function paintGraphInterval() {
 	getGraphDataInterval("#names2 option:selected",interval,interval + 1000);
 	//$.plot("#placeholder", dataGraph);
@@ -166,10 +193,6 @@ function paintGraphInterval() {
 	update();
 }
 
-var data = [],
-	totalPoints = 200;
-
-var updateInterval = 10;
 function update() {
 
 	plot.setData([getData()]);
@@ -249,10 +272,6 @@ function paintGraph() {
 	});
 }
 
-var soapResponseData;
-var maxtimesession;
-var dataGraph = [];
-
 function paintTable(label) {
 	jQuery.each(dataGraph, function(i, ipos) {
 		if (ipos.label == label) {
@@ -306,6 +325,7 @@ Description:	Get data (JSON) from the experimental session
 				Get info for experimental data !!! (if no data)
 
 **************************************************************/
+
 function getExperimentalSessionInfoFunction(soapResponse,parameters){
 	soapResponseData = soapResponse;
 	var obj = soapResponseData.toJSON().Body;
@@ -379,6 +399,7 @@ Description: Populate experimental sessions (ID) related to a work
 			session
 
 **************************************************************/
+
 function getSessionInfoFunction(soapResponse,parameters){
 	var obj = soapResponse.toJSON().Body;
 	var session = obj.getSessionInfoResponse.return;
@@ -442,7 +463,7 @@ function getExperimentSessionsFunction(soapResponse,parameters) {
 		$('#sessionsTable').append(row_object);
 		
 		// check if experiment session has data session associated
-		loadSoapExperimentSessionsWS('getSessionInfo',{ sessionId: session.ID },getExperimentalSessionInfoFunction);
+		loadSoapSessionDataManagementWS('getSessionInfo',{ sessionId: session.ID },getExperimentalSessionInfoFunction);
 	});
 	
 	/// Add the handler
@@ -458,11 +479,11 @@ function getExperimentSessionsFunction(soapResponse,parameters) {
 		$('#sessionselected').html(sessionIDval);
 		$('#sessionid').val(sessionIDval);
 		
-		loadSoapExperimentSessionsWS('getSessionSimpleDataSet',parameters,getSessionSimpleDataSetFunction,1);
+		loadSoapSessionDataManagementWS('getSessionSimpleDataSet',parameters,getSessionSimpleDataSetFunction,1);
 		
-		loadSoapExperimentSessionsWS('getMaxTimeSession',parameters,getMaxTimeSessionFunction,0);
+		loadSoapSessionDataManagementWS('getMaxTimeSession',parameters,getMaxTimeSessionFunction,0);
 		
-		loadSoapExperimentSessionsWS('getSampleTimeSession',parameters,getSampleTimeSessionFunction,0);
+		loadSoapSessionDataManagementWS('getSampleTimeSession',parameters,getSampleTimeSessionFunction,0);
 	});
 	
 	// Fill the id="experiment-name"
@@ -473,7 +494,7 @@ function getExperimentSessionsFunction(soapResponse,parameters) {
 	// Get XML file in order to buid experimental interface in "live" button
     // systemId is a global variable  defined in related-ws-xml-js
 	// and need the #experiment_name component to create original structures
-    loadSoapXmlWS('getXmlConfFile',{systemId:systemId},getXmlConfFileSuccessFunction);
+    loadSoapXMLLoaderWS('getXmlConfFile',{systemId:systemId},getXmlConfFileSuccessFunction);
 }
 
 function getMaxTimeSessionFunction(soapResponse) {
@@ -486,71 +507,4 @@ function getSampleTimeSessionFunction(soapResponse) {
 	var obj = soapResponse.toJSON().Body;
 	var returnval = obj.getSampleTimeSessionResponse.return;
 	$('#sampletimesession').val(returnval/1000.0);
-}
-
-/**************************************************************
-	
-	FUNCIONES GENERICAS LLAMADAS A WEB SERVICES
-
-**************************************************************/
-function loadSoapExperimentSessionsWS(method,parameters,successfunction,hideloading) {
-	hideloading = typeof hideloading !== 'undefined' ? hideloading : 1;
-	$("#divloading").removeClass("hidden");
-	$.soap({
-		url: 'http://lab.scc.uned.es:8080/axis2/services/SessionDataManagementWS/',
-		method: method,
-		
-		appendMethodToURL: true, 
-		
-		params: parameters,
-
-		namespaceQualifier: 'data',                     // used as namespace prefix for all elements in request (optional)
-		namespaceURL: 'http://data.sessions.ws.related.scc.uned.es',
-		
-		success: function (soapResponse) {
-			if (hideloading) {
-				$("#divloading").addClass("hidden");
-			}
-			eval(successfunction(soapResponse,this.data));
-		},		
-		error: function (soapResponse) {
-			// show error
-			if (hideloading) {
-				$("#divloading").addClass("hidden");
-			}
-			document.write("ERROR: " + soapResponse);
-		},
-		// Async (default= false)
-		async: true,
-		// debugging
-		enableLogging: true   
-	});
-}
-
-function loadSoapSessionsWS(method,parameters,successfunction) {
-	var result;
-	$("#divloading").removeClass("hidden");
-	$.soap({
-		url: 'http://lab.scc.uned.es:8080/axis2/services/SessionsWS_v2/',
-		method: method,
-
-		appendMethodToURL: true, 
-		
-		params: parameters,
-
-		namespaceQualifier: 'sessions',                     // used as namespace prefix for all elements in request (optional)
-		namespaceURL: 'http://sessions.ws.web.related.scc.uned.es',
-		
-		success: function (soapResponse) {
-			$("#divloading").addClass("hidden");
-			eval(successfunction(soapResponse,this.data));
-		},		
-		error: function (soapResponse) {
-			// show error
-			$("#divloading").addClass("hidden");
-			document.write("ERROR: " + soapResponse);
-		},
-		// debugging
-		enableLogging: true   
-	});
 }
