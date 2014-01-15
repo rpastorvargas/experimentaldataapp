@@ -500,3 +500,9 @@ h6 {
 .hideElement {
 	display:none;
 }
+
+#logo {
+ width:70px;
+ height:70px;
+ margin-top:5px;
+}

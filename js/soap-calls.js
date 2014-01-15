@@ -16,14 +16,14 @@ function loadSoapSessionDataManagementWS(method,parameters,successfunction,hidel
 	loadSoapExperimentSessions(method,parameters,successfunction,hideloading,url,namespaceQualifier,namespaceURL);
 }
 
-function loadSoapXMLLoaderWS(method,parameters,successfunction) {	
+function loadSoapXMLLoaderWS(method,parameters,successfunction) {
 	var url = 'http://lab.scc.uned.es:8080/axis2/services/XMLLoaderWS/';
 	var namespaceQualifier = 'xmlconffileloader';
 	var namespaceURL = 'http://xmlconffileloader.ws.web.related.scc.uned.es';
 	loadSoapExperimentSessions(method,parameters,successfunction,true,url,namespaceQualifier,namespaceURL);
 }
 
-function loadSoapManageSystemsWS(method,parameters,successfunction) {	
+function loadSoapManageSystemsWS(method,parameters,successfunction) {
 	var url = 'https://lab.scc.uned.es:8443/axis2/services/ManageSystemsWS/';
 	var namespaceQualifier = 'systems';
 	var namespaceURL = 'http://systems.ws.related.scc.uned.es';

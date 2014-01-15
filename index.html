@@ -48,18 +48,12 @@
 				  <i class="fa fa-bars"></i>
 				</a>
 				<div class="subnav-collapse collapse">
-					<img id="logo" src="img/related_logo.png" width="70px" height="70px" />
+					<img id="logo" src="img/related_logo.png" />
 					<ul class="mainnav">
 						<li class="active">
 							<a href="javascript:;">
 								<i class="fa fa-home"></i>
 								<span>Inicio</span>
-							</a>
-						</li>
-						<li>
-							<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
-								<i class="fa fa-th"></i>
-								<span>Sesiones</span>
 							</a>
 						</li>
 					</ul>
@@ -189,7 +183,7 @@
 										</select>
 									</div>
 									<div class="col-sm-3">
-										<button id="saveXml" type="button" class="btn btn-primary"><i class="fa fa-save"></i> Save XML</button>
+										<button id="saveXml" type="button" class="btn btn-primary"><i class="fa fa-save"></i> Save</button>
 									</div>
 								</div>
 							
@@ -211,7 +205,9 @@
 								<div class="row">
 									<div class="col-sm-6">
 										<button id="startLive" type="button" class="btn btn-primary"><i class="fa fa-bar-chart-o"></i> Generate Graph</button>
-										<select id="sltLiveStart" multiple="multiple">
+										<!--<select id="sltLiveStart" multiple="multiple">
+										</select>-->
+										<select id="sltLiveStart" multiple="multiple" class="multipleselect">
 										</select>
 									</div>
 									<div class="col-sm-6">
