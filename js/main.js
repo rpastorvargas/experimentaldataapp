@@ -61,7 +61,8 @@ $(document).ready(function() {
 	// var workSessionId = "09676571718a476aa8e9029ff6a4955b";
 	
 	// This session has three experimental sessions (MOTOR QET)
-	workSessionId = "e4039c4e21d54708a9ea2d0a966ee1c0";
+	
+	workSessionId = $("#workSessionID").html();
 	
 	// Populate the session Info table
 	loadSoapSessionsWS_v2("getSessionInfo",{sessionId:workSessionId},getSessionInfoFunction);
