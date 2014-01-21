@@ -13,7 +13,15 @@ var data = [];
 var	totalPoints = 200;
 // Variable que indica cada cuantos milisegundos ejecutamos nuestra función de SetInterval
 var updateInterval = 10;
+// Variable que representa al temporizador y que se usa en live...
+var liveTimer = null;
+// Variable que representa el intervalo de ejecución de la tarea asociada al live timer
+var liveTimerTime = 1000;
+// Variable for index in the points
+var liveTimerIndex = 0;
 
+// VARIABLES GENERALES
+var dataSession = null;
 
 // VARIABLES GLOBALES APARTADO SOAP
 
@@ -28,6 +36,19 @@ var dataGraph = [];
 
 
 $(document).ready(function() {
+	
+	// Check for workSession as parameter
+	sessionId = $.getUrlParameter('sessionId');
+	if (typeof sessionId == "undefined"){
+		// DEBUG MODE: Quit on production !!!
+		$("#workSessionID").html("531a9b43d93a4353b5020a3403b3fd3d");
+		// This must present a error on the main page
+		$("body").html("No session Id has been selected...");
+	} else {
+		$("#workSessionID").html(sessionId);
+	}
+	
+	
 	
 	$('.multipleselect').multiselect();
 	//$('#sltLiveStart').multiselect();
@@ -73,22 +94,68 @@ $(document).ready(function() {
 		paintGraph();
 	});
 	
-	$("#startLive").click(function() {
+/*	$("#startLive").click(function() {
 		$("#liveShowView").hide();
 		$("#liveGenerateGraph").show();
-		$('#progressbar').val(0);
-		$('#rangebar').val(0);
+		
 		/*if (plot !== "undefined") {
 			plot.shutdown();
 		}
 		*/
-		paintGraphInterval();
+/*		paintGraphInterval();
 		updateProgressBar();
+	});*/
+	
+	// Live control
+	$("#btnStartLive").click(function(){
+		$("#btnStartLive").addClass("hidden");
+		$("#btnPauseLive").removeClass("hidden");
+		// Init progess bar
+		$('#progressbar').val(0);
+		$('#rangebar').val(0);
+		// Start the "live timer" using the 
+		liveTimer = window.setInterval(	function(){liveTimerTask()},liveTimerTime);
 	});
 	
+	$("#btnPauseLive").click(function(){
+		$("#btnStartLive").removeClass("hidden");
+		$("#btnPauseLive").addClass("hidden");
+		window.clearInterval(liveTimer);
+		liveTimer = null;
+		liveTimerIndex=0;
+	});
+	
+	// Buttons for generated graphs and views
 	$("#showViewLive").click(function() {
-		$("#liveGenerateGraph").hide();
 		$("#liveShowView").show();
+		$("#liveShowGraph").hide();
+				// Select graph (value on select) and show
+		div_to_shown = $("#sltShowView").val();
+		var $views_divs = $('#liveShowView > div');
+		$.each($views_divs, function(i,div){
+			id = $(div).attr("id");
+			if (id==div_to_shown){
+				$(div).show();
+			} else {
+				$(div).hide();
+			}
+		});
+
+	});
+	$("#showGraphLive").click(function() {
+		$("#liveShowView").hide();
+		$("#liveShowGraph").show();
+		// Select graph (value on select) and show
+		div_to_shown = $("#sltShowGraph").val();
+		var $graphs_divs = $('#liveShowGraph > div');
+		$.each($graphs_divs, function(i,div){
+			id = $(div).attr("id");
+			if (id==div_to_shown){
+				$(div).show();
+			} else {
+				$(div).hide();
+			}
+		});
 	});
 	
 	$('#rangebar').change( function() {
@@ -129,7 +196,96 @@ $(document).ready(function() {
 		paintTable($(this).text());
 		$('#myModal').modal('show');
 	});
+	
+	$("#btnSave").click( function(){
+		// Create the csv values using the select for names
+		selected_names = "#names option:selected";
+		vars_selected = new Array();
+		$(selected_names).each(function() {
+			var nameSelected = $(this).val().split('(')[0].split('_')[0];
+			var moduleNameSelected = $(this).parent().attr( "label" );
+			variable_selected = new Object();
+			variable_selected.name = nameSelected;
+			variable_selected.moduleName = moduleNameSelected;
+			vars_selected.push(variable_selected);
+		});
+		// Data
+		var sessionData = soapResponseData.toJSON().Body.getSessionSimpleDataSetResponse.return.data;
+		
+		if (vars_selected.length>0){
+			dataToDownload = convertToCSV(sessionData,vars_selected);
+			// Create a url object
+			a = document.createElement("a");
+			blob = new Blob([dataToDownload], {"type":"application\/octet-stream"});
+			a.href = window.URL.createObjectURL(blob);
+			a.download = sessionId + ".csv";
+			a.click();
+		}
+	});
 });
+
+/******************************************************************
+
+
+
+
+******************************************************************/
+function liveTimerTask(){
+	time = (liveTimerIndex*liveTimerTime)/1000.0;
+	// Take a data set on point i and update graphs and views !!!
+	$('#liveTime').html("T: " + time );
+	
+	maxtimesession = parseFloat($('#maxtimesession').val());
+	if (time<maxtimesession){
+		// Variables
+		json_data = dataSession.data[liveTimerIndex];
+		data = $.parseJSON(json_data);
+		//data = JSON.parse(json_data);
+		vars = data.vars;
+		image_var = null;
+		length = -1;
+		// Patch the image value!!!
+		for (var i = 0; i < vars.length; i++) {
+			if (vars[i].name == "image") {
+				image_var = vars[i];
+				length_new = image_var.value.length;
+				if ( length != length_new){
+					console.log("image(" + length_new + ") --> " + time);
+					length = length_new;
+				}
+				break;
+			}
+		}
+		if (image_var!=null){
+			image_var.value = JSON.stringify(image_var.value);
+		}
+		// Update views !!!
+		views = $('#liveShowView > div');
+		$.each(views,function(i,view){
+			// Get the iframe
+			div_id = $(view).attr("id");
+			iframe = $('#' + div_id + " iframe");
+			// Call the function
+			$(iframe)[0].contentWindow.onRLABReceiveData(vars);
+		});
+		
+		// Update graphs
+		
+		// Update time
+		liveTimerIndex++;
+	} else {
+		$('#btnPauseLive').click();
+	}
+}
+
+
+
+/******************************************************************
+
+
+
+
+******************************************************************/
 
 function visibleWidgetSessions(selector,forcehide) {
 	var ielement = selector.children('i');
@@ -350,7 +506,9 @@ function getSessionSimpleDataSetFunction(soapResponse,parameters) {
 	var obj = soapResponseData.toJSON().Body;
 	var returnval = obj.getSessionSimpleDataSetResponse.return;
 	paintMultipleSelect();
-	paintViewsInfo();
+	// Set the session data
+	dataSession = returnval;
+	// paintViewsInfo();
 	//paintMultipleSelect();
 /*	jQuery.each(returnval.data, function(i, ipos) {
 		var vars = JSON.parse(ipos);
@@ -508,4 +666,23 @@ function getSampleTimeSessionFunction(soapResponse) {
 	var obj = soapResponse.toJSON().Body;
 	var returnval = obj.getSampleTimeSessionResponse.return;
 	$('#sampletimesession').val(returnval/1000.0);
+	liveTimerTime = parseInt(returnval);
 }
+
+// Find parameters
+$.extend({
+  getUrlParameters: function(){
+    var vars = [], hash;
+    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+    for(var i = 0; i < hashes.length; i++)
+    {
+      hash = hashes[i].split('=');
+      vars.push(hash[0]);
+      vars[hash[0]] = hash[1];
+    }
+    return vars;
+  },
+  getUrlParameter: function(name){
+    return $.getUrlParameters()[name];
+  }
+});

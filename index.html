@@ -87,7 +87,7 @@
                         
                         <div class="widget-content">
 							<div style="padding-bottom:5px;">
-								<span style="font-weight:bold;">Work Session ID:</span><span id="workSessionID">e4039c4e21d54708a9ea2d0a966ee1c0</span>
+								<span style="font-weight:bold;">Work Session ID:</span><span id="workSessionID">Id for Work Session</span>
 							</div>
                         	<table class="table table-striped table-bordered" id="sessionsInformationTable">
 								<thead>
@@ -192,7 +192,7 @@
 										</select>
 									</div>
 									<div class="col-sm-3">
-										<button id="saveXml" type="button" class="btn btn-primary"><i class="fa fa-save"></i> Save</button>
+										<button id="btnSave" type="button" class="btn btn-primary"><i class="fa fa-save"></i> Save</button>
 									</div>
 								</div>
 							
@@ -204,29 +204,43 @@
 					</div>
 				</div> <!-- /row -->
 				<div id="sessioninfolive" class="row">
-					<div class="col-sm-6">
+					<div class="col-sm-12">
 						<div class="widget">
 							<div class="widget-header">
 								<i class="fa fa-signal"></i>
 								<h3>Live</h3>
 							</div> <!-- /widget-header -->
 							<div class="widget-content clearfix">
-								<div class="row">
+								
+                                <div class="row" style="margin-top:5px; margin-bottom:5px; margin-left:2px; margin-right:2px;">
+                                	<div class="col-sm-2">
+                                    	<button type="button" class="btn btn-success" id="btnStartLive"> 
+                                        <i class="fa fa-play"></i></button>
+                                        <button type="button" class="btn btn-danger hidden" id="btnPauseLive">
+                                        <i class="fa fa-pause"></i></button>
+                                        <div id="liveTime"></div>
+                                    </div>
+                                    <div class="col-sm-10">
+										<input id="rangebar" type="range" name="price" id="price" min="0" max="100" value="0" style="width:100%;">
+                                            </input>
+                                    </div>
+                                </div>
+                                <div class="row">
 									<div class="col-sm-6">
-										<button id="startLive" type="button" class="btn btn-primary"><i class="fa fa-bar-chart-o"></i> Generate Graph</button>
+										<button id="showGraphLive" type="button" class="btn btn-primary"><i class="fa fa-bar-chart-o"></i> Show Graph</button>
 										<!--<select id="sltLiveStart" multiple="multiple">
 										</select>-->
-										<select id="sltLiveStart" multiple="multiple" class="multipleselect">
+										<select id="sltShowGraph">
 										</select>
 									</div>
 									<div class="col-sm-6">
 										<button id="showViewLive" type="button" class="btn btn-primary"><i class="fa fa-th"></i> Show View</button>
-										<select id="sltShowView" multiple="multiple">
+										<select id="sltShowView">
 										</select>
 									</div>
 								</div>
 								<div class="liveContainer">
-									<div id="liveGenerateGraph" class="hideElement">
+                                	<!-- <div id="liveGenerateGraph" class="hideElement">
 										<div class="demo-container">
 											<div id="placeholder2" class="demo-placeholder"></div>
 										</div>
@@ -236,24 +250,21 @@
 													<progress id="progressbar" value="0" max="100"></progress>
 													<span class="progress-value">0%</span>
 												</div>
-												<div style="margin-top:-23px;">
-													<input id="rangebar" type="range" name="price" id="price" min="0" max="100" value="0" style="width:100%;" />
-												</div>
+												
 											</div>
 										</div>
+									</div> -->
+                                    <div id="liveShowGraph" class="hideElement">
+										Show Graphs
 									</div>
 									<div id="liveShowView" class="hideElement">
-										Show View
+										Show Views
 									</div>
 								</div>
 							</div>
 						</div>
 					</div>
-                    <div class="col-sm-6">
-                    	<!-- Only an example, remove and generate a tab based control o similar -->
-                    	<div id="web_video_container">
-                        </div>
-                    </div>
+                    
 				</div> <!-- /row -->
 			</div>
 		</div>
@@ -311,5 +322,6 @@
 	<script type="text/javascript" src="js/main.js"></script>
     <script type="text/javascript" src="js/related-ws-xml.js"></script>
 	<script type="text/javascript" src="js/soap-calls.js"></script>
+    <script type="text/javascript" src="js/json2csv.js"></script>
   </body>
 </html>

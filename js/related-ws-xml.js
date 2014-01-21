@@ -68,14 +68,63 @@ function getXmlConfFileSuccessFunction(soapResponse, soapParams){
 }
 
 function paintViewsInfo() {
-	$('#sltShowView').html('');
+	//$('#sltShowView').html('');
 	var res = '';
+	// Sample function
+	var baseLocation = "http://lab.scc.uned.es/related/jar_files/webviews/" + systemId + "/";
+			
 	jQuery.each(views_info, function(i, ipos) {
-		res = res + '<option value="' + ipos.html_dir + ipos.html_page + '">' + ipos.name + '</option>';
+		url = baseLocation + ipos.html_page;
+		div_iframe_id = "View-" + i; 
+		res = res + '<option value="' + div_iframe_id + '">' + ipos.name + '</option>';
+		// Load the iframe !!!
+		iframe = "<iframe width='600' height='800' sandbox='allow-scripts allow-top-navigation allow-same-origin' frameborder='0' src='" + url + "'></iframe>"
+		$(iframe).attr('src',url);
+		// Add to container
+		viewDiv = "<div class='text-center text-success' style='padding-top: 10px;' id='" + div_iframe_id + "'><div class='panel panel-primary'>";
+		viewDiv += "<div class='panel-heading'><h3 class='panel-title'>" + ipos.name + "</h3>";
+		viewDiv += "</div><div class='panel-body'>" + iframe + "</div></div></div>";
+		$(viewDiv).load();
+		if (i==0){
+			$('#liveShowView').html($(viewDiv));
+		} else {
+			$('#liveShowView').append($(viewDiv));
+		}
 	});
 	$('#sltShowView').append(res);
 	$('#sltShowView').multiselect('rebuild');
 }
+
+function paintGraphsInfo() {
+	
+	var res = '';
+			
+	jQuery.each(graphs_info, function(i, ipos) {
+		div_iframe_id = "Graphs-" + i; 
+		// Build graph title on select
+		title = "Module: " + ipos.module + " --> "; 
+		jQuery.each(ipos.names, function(i,iname){
+			title += iname + " ";
+		});
+		
+		res = res + '<option value="' + div_iframe_id + '">' + title + '</option>';
+		// Build the graph for div
+		// function to build the graph !!!
+		graphDiv = "<div class='text-center text-success' style='padding-top: 10px;' id='" + div_iframe_id + "'><div class='panel panel-primary'>";
+		graphDiv += "<div class='panel-heading'><h3 class='panel-title'>" + title + "</h3>";
+		graphDiv += "</div><div class='panel-body'>Builded graph for " + title + "</div></div></div>";
+		
+		// Add to container
+		if (i==0){
+			$('#liveShowGraph').html($(graphDiv));
+		} else {
+			$('#liveShowGraph').append($(graphDiv));
+		}
+	});
+	$('#sltShowGraph').append(res);
+	$('#sltShowGraph').multiselect('rebuild');
+}
+
 
 function paintLiveStart() {
 	$('#sltLiveStart').html('');
@@ -240,17 +289,12 @@ function getViewsInfo($experiment_node,$system_node){
 *********************************************************/
 
 function buildUI(systemId, viewObjectsArray, graphInfoObjectsArray){
-	// Sample function
-	var baseLocation = "http://lab.scc.uned.es/related/jar_files/webviews/" + systemId + "/";
 	
 	if (viewObjectsArray.length>0){
-		for (i=0; i<viewObjectsArray.length; i++){
-			var url=baseLocation + viewObjectsArray[i].html_page;
-			// Build an iframe
-			iframe = "<iframe width='600' height='800' sandbox='allow-scripts allow-top-navigation allow-same-origin' frameborder='0' src='" + url + "'></iframe>"
-			$(iframe).attr('src',url);
-			$('#web_video_container').append(iframe);
-		}
+		paintViewsInfo();
 	}	
+	if (graphInfoObjectsArray.length>0){
+		paintGraphsInfo();
+	}
 }
 
