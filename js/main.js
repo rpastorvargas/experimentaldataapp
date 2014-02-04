@@ -43,7 +43,7 @@ $(document).ready(function() {
 		// DEBUG MODE: Quit on production !!!
 		$("#workSessionID").html("531a9b43d93a4353b5020a3403b3fd3d");
 		// This must present a error on the main page
-		$("body").html("No session Id has been selected...");
+		//$("body").html("No session Id has been selected...");
 	} else {
 		$("#workSessionID").html(sessionId);
 	}
@@ -94,7 +94,7 @@ $(document).ready(function() {
 		paintGraph();
 	});
 	
-/*	$("#startLive").click(function() {
+	$("#startLive").click(function() {
 		$("#liveShowView").hide();
 		$("#liveGenerateGraph").show();
 		
@@ -102,9 +102,9 @@ $(document).ready(function() {
 			plot.shutdown();
 		}
 		*/
-/*		paintGraphInterval();
-		updateProgressBar();
-	});*/
+		//paintGraphInterval();
+		//updateProgressBar();
+	});
 	
 	// Live control
 	$("#btnStartLive").click(function(){
@@ -142,7 +142,7 @@ $(document).ready(function() {
 		});
 
 	});
-	$("#showGraphLive").click(function() {
+/*	$("#showGraphLive").click(function() {
 		$("#liveShowView").hide();
 		$("#liveShowGraph").show();
 		// Select graph (value on select) and show
@@ -156,6 +156,13 @@ $(document).ready(function() {
 				$(div).hide();
 			}
 		});
+	});
+*/	
+	$("#showGraphLive").click(function() {
+		$("#liveShowView").hide();
+		$("#liveShowGraph").show();
+		
+		paintGraphInterval();
 	});
 	
 	$('#rangebar').change( function() {
@@ -324,7 +331,7 @@ function updateProgressBar() {
 }
 
 function paintGraphInterval() {
-	getGraphDataInterval("#names2 option:selected",interval,interval + 1000);
+	getGraphDataInterval("#sltShowGraph option:selected",interval,interval + 1000);
 	//$.plot("#placeholder", dataGraph);
 	/*plot = $.plot($("#placeholder2"), dataGraph, {
 		series: {
@@ -367,9 +374,10 @@ function getData() {
 		data = data.slice(1);
 	}
 	
-	var nameSelect = $("#sltLiveStart").val();
-	console.log('getData');
-	console.log(nameSelect);
+	var valSelect = $("#sltShowGraph option:selected").val();
+	console.log(valSelect);
+	var moduleName = valSelect.split('_')[1];
+	var nameSelect = valSelect.split('_')[1].split('-')[0];
 	var obj = soapResponseData.toJSON().Body;
 	var returnval = obj.getSessionSimpleDataSetResponse.return;
 	var vars = JSON.parse(returnval.data[interval]);
@@ -387,9 +395,8 @@ function getData() {
 function getGraphDataInterval(selector,intervalIni,intervalEnd) {
 	dataGraph = [];
 	$(selector).each(function() {
-		console.log('getGraphDataInterval');
-		console.log($(this).val());		
-		var nameSelect = $(this).val().split('_')[0];
+		var moduleName = $(this).val().split('_')[1];
+		var nameSelect = $(this).val().split('_')[1].split('-')[0];
 		var dataGraph2 = [];
 		var obj = soapResponseData.toJSON().Body;
 		var returnval = obj.getSessionSimpleDataSetResponse.return;

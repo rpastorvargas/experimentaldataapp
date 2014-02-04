@@ -100,11 +100,20 @@ function paintGraphsInfo() {
 	var res = '';
 			
 	jQuery.each(graphs_info, function(i, ipos) {
-		div_iframe_id = "Graphs-" + i; 
+		//div_iframe_id = "Graphs-" + i; 
+		div_iframe_id = "ipos.module_";
 		// Build graph title on select
 		title = "Module: " + ipos.module + " --> "; 
+		console.log('ENTRAMOSSSSS');
 		jQuery.each(ipos.names, function(i,iname){
 			title += iname + " ";
+
+			if (ipos.names.length == (i + 1)) {
+				div_iframe_id += iname;
+			}
+			else {
+				div_iframe_id += iname + "-";
+			}
 		});
 		
 		res = res + '<option value="' + div_iframe_id + '">' + title + '</option>';
@@ -115,11 +124,12 @@ function paintGraphsInfo() {
 		graphDiv += "</div><div class='panel-body'>Builded graph for " + title + "</div></div></div>";
 		
 		// Add to container
-		if (i==0){
+		/*if (i==0){
 			$('#liveShowGraph').html($(graphDiv));
 		} else {
 			$('#liveShowGraph').append($(graphDiv));
 		}
+		*/
 	});
 	$('#sltShowGraph').append(res);
 	$('#sltShowGraph').multiselect('rebuild');
