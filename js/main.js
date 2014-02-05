@@ -10,15 +10,17 @@ var plot;
 // Variable para ir metiendo en cada intervalo el dato correspondiente y ir desplazando
 var data = [];
 // Variable en la que guardamos el número de puntos que pintamos por muestra
-var	totalPoints = 200;
+var	totalPoints = 2000;
 // Variable que indica cada cuantos milisegundos ejecutamos nuestra función de SetInterval
-var updateInterval = 10;
+var updateInterval = 1000;
 // Variable que representa al temporizador y que se usa en live...
 var liveTimer = null;
 // Variable que representa el intervalo de ejecución de la tarea asociada al live timer
 var liveTimerTime = 1000;
 // Variable for index in the points
 var liveTimerIndex = 0;
+
+var getMaxValueY = 0;
 
 // VARIABLES GENERALES
 var dataSession = null;
@@ -48,22 +50,9 @@ $(document).ready(function() {
 		$("#workSessionID").html(sessionId);
 	}
 	
-	
-	
 	$('.multipleselect').multiselect();
 	//$('#sltLiveStart').multiselect();
 	$('#sltShowView').multiselect();
-	
-	window.onresize = function(event) {
-		if (typeof soapResponseData !== "undefined") {
-			if ($("#sessioninfographics").is(":visible")) {
-				paintGraph();
-			}
-			else if ($("#sessioninfolive").is(":visible")) {
-				paintGraphInterval();
-			}
-		}
-	}
 	
 	$('.button-icon-minimize').click(function() {
 		visibleWidgetSessions($(this),false);
@@ -162,6 +151,8 @@ $(document).ready(function() {
 		$("#liveShowView").hide();
 		$("#liveShowGraph").show();
 		
+		getMaxValueYAxis();
+		
 		paintGraphInterval();
 	});
 	
@@ -230,6 +221,28 @@ $(document).ready(function() {
 		}
 	});
 });
+
+function getMaxValueYAxis() {
+
+	console.log('Entramos');
+
+	var valSelect = $("#sltShowGraph option:selected").val();
+	var moduleName = valSelect.split('_')[1];
+	var nameSelect = valSelect.split('_')[1].split('-')[0];
+	var obj = soapResponseData.toJSON().Body;
+	var returnval = obj.getSessionSimpleDataSetResponse.return;
+	jQuery.each(returnval.data, function(i, ipos) {
+		var vars = JSON.parse(ipos);
+		jQuery.each(vars.vars, function(j, jpos) {
+			if (nameSelect == jpos.name) {
+				if (jpos.value > getMaxValueY) {
+					getMaxValueY = parseInt(jpos.value);
+				}
+			}
+		});
+	});
+	console.log('Maximo valor ' + getMaxValueY);
+}
 
 /******************************************************************
 
@@ -330,7 +343,37 @@ function updateProgressBar() {
 	}, time);
 }
 
+var options = {
+    series: {
+        lines: {
+            show: true,
+            lineWidth: 1.2,
+            fill: true
+        }
+    },
+    yaxis: {
+        min: 0,
+        max: getMaxValueY    
+    },
+    legend: {        
+        labelBoxBorderColor: "#fff"
+    },
+    grid: {                
+        backgroundColor: "#000000",
+        tickColor: "#008040"
+    }
+};
+
 function paintGraphInterval() {
+	console.log('paintGraphInterval');
+	getGraphDataInterval("#sltShowGraph option:selected",interval);
+	options.yaxis.max = getMaxValueY  + (getMaxValueY/5);
+	console.log(options.yaxis.max);
+	$.plot($("#placeholder2"), dataGraph, options);
+	update();
+}
+
+function paintGraphIntervalToDelete() {
 	getGraphDataInterval("#sltShowGraph option:selected",interval,interval + 1000);
 	//$.plot("#placeholder", dataGraph);
 	/*plot = $.plot($("#placeholder2"), dataGraph, {
@@ -358,6 +401,18 @@ function paintGraphInterval() {
 }
 
 function update() {
+	maxtimesession = parseFloat($('#maxtimesession').val()) * 1000;
+	getGraphDataInterval("#sltShowGraph option:selected",interval);
+	$.plot($("#placeholder2"), dataGraph, options);
+	
+	interval = interval + 1000;
+	console.log('Interval ' + interval);
+	if (interval <= maxtimesession) {
+		setTimeout(update, updateInterval);
+	}
+}
+
+function updateToDelete() {
 
 	plot.setData([getData()]);
 
@@ -392,7 +447,55 @@ function getData() {
 	return data;
 }
 
-function getGraphDataInterval(selector,intervalIni,intervalEnd) {
+function getDataToDelete() {
+	if (data.length == totalPoints) {
+		data = data.slice(1);
+	}
+	
+	var valSelect = $("#sltShowGraph option:selected").val();
+	console.log(valSelect);
+	var moduleName = valSelect.split('_')[1];
+	var nameSelect = valSelect.split('_')[1].split('-')[0];
+	var obj = soapResponseData.toJSON().Body;
+	var returnval = obj.getSessionSimpleDataSetResponse.return;
+	var vars = JSON.parse(returnval.data[interval]);
+	var tickSealedTime = vars.sealed_time;
+	jQuery.each(vars.vars, function(j, jpos) {
+		if (nameSelect == jpos.name) {
+			data.push([tickSealedTime/100, jpos.value]);
+			return false;
+		}
+	});
+	interval = interval + 1;
+	return data;
+}
+
+function getGraphDataInterval(selector,intervalIni) {
+	dataGraph.shift();
+	$(selector).each(function() {
+		var moduleName = $(this).val().split('_')[1];
+		var nameSelect = $(this).val().split('_')[1].split('-')[0];
+		var dataGraph2 = [];
+		var obj = soapResponseData.toJSON().Body;
+		var returnval = obj.getSessionSimpleDataSetResponse.return;
+		jQuery.each(returnval.data, function(i, ipos) {
+			var vars = JSON.parse(ipos);
+			var tickSealedTime = vars.sealed_time;
+			if (tickSealedTime >= intervalIni && tickSealedTime < (intervalIni + 8000)) {
+				jQuery.each(vars.vars, function(j, jpos) {
+					if (nameSelect == jpos.name) {
+						dataGraph2.push([tickSealedTime/100, jpos.value]);
+						return false;
+					}
+				});
+				maxtimesession = tickSealedTime;
+			}
+		});
+		dataGraph.push( {label: nameSelect, data: dataGraph2, color: "#00FF00" } );
+	});
+}
+
+/*function getGraphDataInterval(selector,intervalIni,intervalEnd) {
 	dataGraph = [];
 	$(selector).each(function() {
 		var moduleName = $(this).val().split('_')[1];
@@ -416,6 +519,7 @@ function getGraphDataInterval(selector,intervalIni,intervalEnd) {
 		dataGraph.push( {label: nameSelect, data: dataGraph2} );
 	});
 }
+*/
 
 function paintGraph() {
 	console.log('paintGraph');
