@@ -43,17 +43,13 @@ function getXmlConfFileSuccessFunction(soapResponse, soapParams){
 		experiment_name = $('#experiment-name').html();
 		// Locate experiment-name in XML
 		// to get graphs info and defined web views !!!
-		console.log('Entramos');
 		$experiments.each(function(){
 			var name = $(this).attr('name');
 			if (name==experiment_name){
 				// Set lab vars, graphs info and webviews
 				varsInfo = getVarsInfos( $(this), $xml);
 				//paintMultipleSelect();
-				console.log(varsInfo);
 				graphs_info = getGraphInfos($(this),$xml);
-				console.log('graphs_info');
-				console.log(graphs_info);
 				views_info = getViewsInfo($(this),$xml);
 				// Build the UI (example) !!!
 				buildUI(systemId, views_info,graphs_info)
@@ -104,8 +100,6 @@ function paintGraphsInfo() {
 		div_iframe_id = ipos.module + "_";
 		// Build graph title on select
 		title = "Module: " + ipos.module + " --> ";
-		console.log('ENTRAMOSSS');
-		console.log(ipos);
 		jQuery.each(ipos.names, function(i,iname){
 			title += iname + " ";
 
