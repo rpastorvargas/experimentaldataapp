@@ -101,18 +101,19 @@ function paintGraphsInfo() {
 			
 	jQuery.each(graphs_info, function(i, ipos) {
 		//div_iframe_id = "Graphs-" + i; 
-		div_iframe_id = "ipos.module_";
+		div_iframe_id = ipos.module + "_";
 		// Build graph title on select
-		title = "Module: " + ipos.module + " --> "; 
-		console.log('ENTRAMOSSSSS');
+		title = "Module: " + ipos.module + " --> ";
+		console.log('ENTRAMOSSS');
+		console.log(ipos);
 		jQuery.each(ipos.names, function(i,iname){
 			title += iname + " ";
 
 			if (ipos.names.length == (i + 1)) {
-				div_iframe_id += iname;
+				div_iframe_id += iname + "~" + convertColorRGB(ipos.colors[i]);
 			}
 			else {
-				div_iframe_id += iname + "-";
+				div_iframe_id += iname  + "~" + convertColorRGB(ipos.colors[i]) + "-";
 			}
 		});
 		
@@ -133,6 +134,25 @@ function paintGraphsInfo() {
 	});
 	$('#sltShowGraph').append(res);
 	$('#sltShowGraph').multiselect('rebuild');
+}
+
+function convertColorRGB(color) {
+	var value = '';
+	switch(color)
+	{
+		case "red":
+			value = 'FF0000';
+			break;
+		case "yellow":
+			value = 'FFFF00';
+			break;
+		case "blue":
+			value = '0000FF';
+			break;
+		default:
+			value = '';
+	}
+	return value;
 }
 
 
