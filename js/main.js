@@ -19,6 +19,8 @@ var liveTimer = null;
 var liveTimerTime = 1000;
 // Variable for index in the points
 var liveTimerIndex = 0;
+// variable for samples in the live graphics
+var samplesOnLiveGraphics = 100;
 
 var getMaxValueY = 0;
 
@@ -38,10 +40,16 @@ var maxtimesession;
 // Variable en la que guardamos los datos de la gráfica para posteriormente pintarlos
 var dataGraph = [];
 
+// Data to be painted in the live graph
 var dataGraphLive = [];
 
 
 $(document).ready(function() {
+	
+	// Create db to cache session data!!!
+	cachedSessionsDB.open(function(){
+		console.log("Sessions Caché DB created or updated");
+	});
 	
 	// Check for workSession as parameter
 	sessionId = $.getUrlParameter('sessionId');
@@ -103,11 +111,10 @@ $(document).ready(function() {
 	$("#btnStartLive").click(function(){
 		$("#btnStartLive").addClass("hidden");
 		$("#btnPauseLive").removeClass("hidden");
-		// Init progess bar
-		$('#progressbar').val(0);
-		$('#rangebar').val(0);
-		// Start the "live timer" using the 
+		// Start the "live timer" using the sampleTime session
 		liveTimer = window.setInterval(	function(){liveTimerTask()},liveTimerTime);
+		// Disable rangebar
+		$('#rangebar').jqxSlider({ disabled:true }); 
 	});
 	
 	$("#btnPauseLive").click(function(){
@@ -115,7 +122,7 @@ $(document).ready(function() {
 		$("#btnPauseLive").addClass("hidden");
 		window.clearInterval(liveTimer);
 		liveTimer = null;
-		liveTimerIndex=0;
+		$('#rangebar').jqxSlider({ disabled:false }); 
 	});
 	
 	// Buttons for generated graphs and views
@@ -152,24 +159,22 @@ $(document).ready(function() {
 	});
 */	
 	$("#showGraphLive").click(function() {
-		clearTimeout(updateTimeOut);
-		interval = 0;
-		getMaxValueY = 0;
-		dataGraphLive = [];
+		// clearTimeout(updateTimeOut);
+		// interval = 0;
+		// getMaxValueY = 0;
+		// dataGraphLive = [];
 		$("#liveShowView").hide();
 		$("#liveShowGraph").show();
 		
-		getMaxValueYAxis();
+		// Calculate MaxValue for Yaxis
+		// maxvalueYAxis = getMaxValueYAxis();
 		
-		paintGraphInterval();
+		// sample time
+		sampleTime = parseFloat($('#sampletimesession').val())*1000;
+		paintGraphInterval(liveTimerIndex,sampleTime,samplesOnLiveGraphics);
+		
 	});
-	
-	$('#rangebar').change( function() {
-		var newValue = this.value;
-		$('#progressbar').val(newValue);
-		$('.progress-value').html(newValue + '%');
-	});
-	
+		
 	$("#sessioninfoinfo").show();
 	$("#sessioninfographics").hide();
 	$("#sessioninfolive").hide();
@@ -195,7 +200,9 @@ $(document).ready(function() {
 		$("#sessioninfolive").show("fast").fadeIn("fast");
 		$("#sessioninfographics").hide("fast").fadeOut("fast");
 		$("#sessioninfoinfo").hide("fast").fadeOut("fast");
-		//paintGraph();
+		configureProgressBar();
+		// Update
+		liveTimerTime = parseFloat($('#sampletimesession').val())*1000;
 	});
 	
 	$(document).on('click', ".graphlegend", function() {
@@ -216,7 +223,7 @@ $(document).ready(function() {
 			vars_selected.push(variable_selected);
 		});
 		// Data
-		var sessionData = soapResponseData.toJSON().Body.getSessionSimpleDataSetResponse.return.data;
+		var sessionData = dataSession.data;
 		
 		if (vars_selected.length>0){
 			dataToDownload = convertToCSV(sessionData,vars_selected);
@@ -224,10 +231,21 @@ $(document).ready(function() {
 			a = document.createElement("a");
 			blob = new Blob([dataToDownload], {"type":"application\/octet-stream"});
 			a.href = window.URL.createObjectURL(blob);
-			a.download = sessionId + ".csv";
+			a.download = $('#sessionselected').text() + ".csv";
 			a.click();
 		}
 	});
+	
+	/*$('#rangebar').change( function() {
+		// Time
+		var newValue = this.value;
+		// Calculate new
+		sampleTime = parseFloat($('#sampletimesession').val());
+		liveTimerIndex = parseInt(newValue/sampleTime);
+		// udpate 
+		liveTimerTask();
+	}); */
+	
 });
 
 function getMaxValueYAxis() {
@@ -239,9 +257,10 @@ function getMaxValueYAxis() {
 	var namesSelect = valSelect.split('_')[1].split('-');
 	for (i = 0; i < namesSelect.length; i++) {
 		var nameSelect = namesSelect[i].split('~')[0];
-		var obj = soapResponseData.toJSON().Body;
-		var returnval = obj.getSessionSimpleDataSetResponse.return;
-		jQuery.each(returnval.data, function(i, ipos) {
+		//var obj = soapResponseData.toJSON().Body;
+		//var returnval = obj.getSessionSimpleDataSetResponse.return;
+		//jQuery.each(returnval.data, function(i, ipos) {
+		jQuery.each(dataSession.data, function(i, ipos) {
 			var vars = JSON.parse(ipos);
 			jQuery.each(vars.vars, function(j, jpos) {
 				if (nameSelect == jpos.name) {
@@ -264,9 +283,10 @@ function getMaxValueYAxis() {
 function liveTimerTask(){
 	time = (liveTimerIndex*liveTimerTime)/1000.0;
 	// Take a data set on point i and update graphs and views !!!
-	$('#liveTime').html("T: " + time );
+	$('#liveTime').html("T: " + time.toFixed(1) );
 	
 	maxtimesession = parseFloat($('#maxtimesession').val());
+	sampleTime = parseFloat($('#sampletimesession').val())*1000;
 	if (time<maxtimesession){
 		// Variables
 		json_data = dataSession.data[liveTimerIndex];
@@ -281,7 +301,7 @@ function liveTimerTask(){
 				image_var = vars[i];
 				length_new = image_var.value.length;
 				if ( length != length_new){
-					console.log("image(" + length_new + ") --> " + time);
+					// console.log("image(" + length_new + ") --> " + time);
 					length = length_new;
 				}
 				break;
@@ -301,14 +321,19 @@ function liveTimerTask(){
 		});
 		
 		// Update graphs
+		// 100 samples
+		updateLiveGraph(liveTimerIndex,sampleTime,samplesOnLiveGraphics);
 		
-		// Update time
+		// Update progressbar
+		updateProgressBar(time);
+		// Update index for samples/time
 		liveTimerIndex++;
 	} else {
+		$('#rangebar').jqxSlider('setValue', 0);
+		$('#liveTime').html("T: 0.0");
 		$('#btnPauseLive').click();
 	}
 }
-
 
 
 /******************************************************************
@@ -331,70 +356,92 @@ function visibleWidgetSessions(selector,forcehide) {
 	}
 }
 
-function updateProgressBar() {
-	var progressbar = $('#progressbar'),
-		max = progressbar.attr('max'),
-		time = maxtimesession/1000,
-		value = progressbar.val();
-	
-	var loading = function() {
-		value += 1;
-		addValue = progressbar.val(value);
-		
-		$('.progress-value').html(value + '%');
-		$('#rangebar').val(value);
+/******************************************************************
 
-		if (value == max) {
-			clearInterval(animate);
-		}
-	};
+*****************************************************************/
 
-	var animate = setInterval(function() {
-		loading();
-	}, time);
+function updateProgressBar(timeValue){
+	$('#rangebar').jqxSlider('setValue', timeValue);
 }
 
+function configureProgressBar() {
+	maxtimesession = parseFloat($('#maxtimesession').val());
+	sampleTime = parseFloat($('#sampletimesession').val());
+	barOptions = { theme: 'bootstrap', 
+		max: maxtimesession,
+		min: 0,
+		step: sampleTime,
+		width: '100%',
+		showButtons:  false,
+		ticksPosition: 'both',
+		value: 0 };
+		
+		
+	$("#rangebar").jqxSlider(barOptions);
+	$('#rangebar').bind('change', function (event) {
+        // Time
+		var newValue = event.args.value;
+		// Calculate new
+		sampleTime = parseFloat($('#sampletimesession').val());
+		liveTimerIndex = parseInt(newValue/sampleTime);
+		// udpate 
+		liveTimerTask();
+    });
+	
+	//progressbar = $('#progressbar');
+	
+	//progressbar.attr('max',maxtimesession);
+	$('.progress-value').html(0 + ' %');
+	$('#rangebar').val(0);
+	$('#rangebar').attr('max',maxtimesession);
+	$('#rangebar').attr('step',sampleTime);
+} 
+
+/*************************************************************************
+	Live graphics otions
+*************************************************************************/
 var options = {
     series: {
         lines: {
             show: true,
-            lineWidth: 1.2,
-            fill: true
+            lineWidth: 2 //1.2,
+            //fill: true
         }
     },
-    yaxis: {
+    /* yaxis: {
         min: 0,
         max: getMaxValueY    
-    },
-    legend: {        
+    }, */
+	legend: {        
         labelBoxBorderColor: "#fff"
     },
     grid: {                
-        backgroundColor: "#000000",
-        tickColor: "#008040"
+        backgroundColor: "#FFFFFF",
+        tickColor: "#F0F8FF"
     }
 };
 
-function paintGraphInterval() {
-	getGraphDataInterval("#sltShowGraph option:selected",interval);
-	options.yaxis.max = getMaxValueY  + (getMaxValueY/5);
+function paintGraphInterval(liveTimerIndex,sampleTime,samplesOnLiveGraphics) {
+	getGraphDataInterval("#sltShowGraph option:selected",interval,sampleTime,samplesOnLiveGraphics);
+	//options.yaxis.max = getMaxValueY  + (getMaxValueY/5);
 	plot = $.plot($("#placeholder2"), dataGraphLive, options);
 	plot.setupGrid();
-	update();
+	updateLiveGraph();
 }
 
-function update() {
-	maxtimesession = parseFloat($('#maxtimesession').val()) * 1000;
-	getGraphDataInterval("#sltShowGraph option:selected",interval);
+// Time in ms
+function updateLiveGraph(liveTimerIndex,sampleTime, samplesOnLiveGraphics) {
+	// maxtimesession = parseFloat($('#maxtimesession').val()) * 1000;
+	getGraphDataInterval("#sltShowGraph option:selected",liveTimerIndex,sampleTime,samplesOnLiveGraphics);
 	$.plot($("#placeholder2"), dataGraphLive, options);
 	
-	interval = interval + 1000;	
+	/*interval = interval + 1000;	
 	if (interval <= maxtimesession) {
 		updateTimeOut = setTimeout(update, updateInterval);
-	}
+	} */
 }
 
-function getGraphDataInterval(selector,intervalIni) {
+function getGraphDataInterval(selector,liveTimerIndex,sampleTime,samplesOnLiveGraphics) {
 	$(selector).each(function() {
 		var moduleName = $(this).val().split('_')[0];
 		var namesSelect = $(this).val().split('_')[1].split('-');
@@ -405,30 +452,50 @@ function getGraphDataInterval(selector,intervalIni) {
 			var nameValues = namesSelect[i].split('~');
 			var nameSelect = nameValues[0];
 			var color = "#" + nameValues[1];
-			getGraphDataIntervalSimple(intervalIni,moduleName,nameSelect,color);
+			getGraphDataIntervalSimple(liveTimerIndex,sampleTime,samplesOnLiveGraphics,moduleName,nameSelect,color);
 		}
 	});
-	console.log(dataGraphLive);
+	// console.log(dataGraphLive);
 }
 
-function getGraphDataIntervalSimple(intervalIni,moduleName,nameSelect,color) {
+function getGraphDataIntervalSimple(liveTimerIndex,sampleTime,samplesOnLiveGraphics, moduleName,nameSelect,color) {
 	var dataGraph2 = [];
-	var obj = soapResponseData.toJSON().Body;
-	var returnval = obj.getSessionSimpleDataSetResponse.return;
-	jQuery.each(returnval.data, function(i, ipos) {
-		var vars = JSON.parse(ipos);
-		var tickSealedTime = vars.sealed_time;
-		if (tickSealedTime >= intervalIni && tickSealedTime < (intervalIni + 20000)) {
+	//var obj = soapResponseData.toJSON().Body;
+	//var returnval = obj.getSessionSimpleDataSetResponse.return;
+	//jQuery.each(returnval.data, function(i, ipos) {
+	// reduce the data array to [liveTimerIndex-10000, liveTimerIndex]
+	
+	// liveTimerIndex is the actual index on data array
+	// calculated in the liveTimer
+	
+	// sample time in ms
+	
+	// samplesOnLiveGraphics = 100; // 10 seconds (depens on sampleTime of experimental session
+								 // This case: 0.1 s --> 0.1x100 = 10 s
+	if (typeof liveTimerIndex != "undefined"){ 
+		end = liveTimerIndex;
+		start = liveTimerIndex - samplesOnLiveGraphics;
+		if (start<0){
+			start = 0;
+		}
+		// console.log("liveTimerIndex: " + liveTimerIndex);
+		// console.log("data from index: " + start + " to " + end);
+		dataInInterval = dataSession.data.slice(start,end);
+		
+		jQuery.each(dataInInterval, function(i, ipos) {
+			var vars = JSON.parse(ipos);
+			var tickSealedTime = vars.sealed_time;
 			jQuery.each(vars.vars, function(j, jpos) {
 				if (nameSelect == jpos.name && moduleName == jpos.moduleName) {
-					dataGraph2.push([tickSealedTime/100, jpos.value]);
+					// time in ms
+					dataGraph2.push([tickSealedTime/1000, jpos.value]);
 					return false;
 				}
 			});
-			maxtimesession = tickSealedTime;
-		}
-	});
-	dataGraphLive.push( {label: nameSelect, data: dataGraph2, color: color } );
+			
+		});
+		dataGraphLive.push( {label: nameSelect, data: dataGraph2, color: color } );
+	}
 }
 
 function paintGraph() {
@@ -473,9 +540,8 @@ function getGraphData(selector) {
 		var nameSelect = $(this).val().split('(')[0].split('_')[0];
 		var moduleName = $(this).parent().attr( "label" );
 		var dataGraph2 = [];
-		var obj = soapResponseData.toJSON().Body;
-		var returnval = obj.getSessionSimpleDataSetResponse.return;
-		jQuery.each(returnval.data, function(i, ipos) {
+		// dataSession stores the session data !!!
+		jQuery.each(dataSession.data, function(i, ipos) {
 			var vars = JSON.parse(ipos);
 			var tickSealedTime = vars.sealed_time;
 			jQuery.each(vars.vars, function(j, jpos) {
@@ -525,6 +591,16 @@ function getSessionSimpleDataSetFunction(soapResponse,parameters) {
 	paintMultipleSelect();
 	// Set the session data
 	dataSession = returnval;
+	
+	// Save in localstorage
+	maxTime = parseFloat($('#maxtimesession').val());
+	sampleTime = parseFloat($('#sampletimesession').val());
+	// saveCachedDataSession(parameters.sessionId,maxTime,sampleTime,dataSession);
+	cachedSessionsDB.addSessionInfo(parameters.sessionId,maxTime,sampleTime,dataSession, 
+			function(sessionInfoObject){
+				console.log("Session data saved: " + sessionInfoObject.sessionId);
+			}
+	);
 	// paintViewsInfo();
 	//paintMultipleSelect();
 /*	jQuery.each(returnval.data, function(i, ipos) {
@@ -655,11 +731,30 @@ function getExperimentSessionsFunction(soapResponse,parameters) {
 		$('#sessionselected').html(sessionIDval);
 		$('#sessionid').val(sessionIDval);
 		
-		loadSoapSessionDataManagementWS('getSessionSimpleDataSet',parameters,getSessionSimpleDataSetFunction,1);
+		// Look for cached data
+		cachedSessionsDB.findBySessionId(sessionIDval, 
+			function (sessionInfoData){
+				if (sessionInfoData != null){
+					// Data loaded !!!
+					console.log("Data loaded from cache for sessionId: " + sessionInfoData.sessionId);
+					dataSession = sessionInfoData.data;
+					$('#maxtimesession').val(sessionInfoData.maxTime);
+					$('#sampletimesession').val(sessionInfoData.sampleTime);
+					paintMultipleSelect();
+					$( "#sessioninfo" ).removeClass("hidden");
+				} else {
+					// Data is not loaded
+					// get from services source
+					loadSoapSessionDataManagementWS('getMaxTimeSession',parameters,getMaxTimeSessionFunction,0);
+					loadSoapSessionDataManagementWS('getSampleTimeSession',parameters,getSampleTimeSessionFunction,0);
+					loadSoapSessionDataManagementWS('getSessionSimpleDataSet',parameters,getSessionSimpleDataSetFunction,1);
+				}
+			},
+			function (error){
+				console.log(error);
+			}
+		);
 		
-		loadSoapSessionDataManagementWS('getMaxTimeSession',parameters,getMaxTimeSessionFunction,0);
-		
-		loadSoapSessionDataManagementWS('getSampleTimeSession',parameters,getSampleTimeSessionFunction,0);
 	});
 	
 	// Fill the id="experiment-name"

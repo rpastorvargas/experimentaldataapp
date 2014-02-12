@@ -28,9 +28,12 @@
 	
 	<link rel="apple-touch-icon-precomposed" sizes="144x144" href="ico/apple-touch-icon-144-precomposed.png">
     <link rel="apple-touch-icon-precomposed" sizes="114x114" href="ico/apple-touch-icon-114-precomposed.png">
-      <link rel="apple-touch-icon-precomposed" sizes="72x72" href="ico/apple-touch-icon-72-precomposed.png">
-                    <link rel="apple-touch-icon-precomposed" href="ico/apple-touch-icon-57-precomposed.png">
-                                   <link rel="shortcut icon" href="ico/favicon.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="ico/apple-touch-icon-57-precomposed.png">
+    <link rel="shortcut icon" href="ico/favicon.png">
+	
+    <link rel="stylesheet" href="js/jqwidgets/styles/jqx.base.css" type="text/css">
+    <link rel="stylesheet" href="js/jqwidgets/styles/jqx.bootstrap.css" type="text/css">
 	
 	<style>
 	.table {table-layout: fixed;
@@ -221,8 +224,9 @@
                                         <div id="liveTime"></div>
                                     </div>
                                     <div class="col-sm-10">
-										<input id="rangebar" type="range" name="price" id="price" min="0" max="100" value="0" style="width:100%;">
-                                            </input>
+                                    	<div id="rangebar"></div>
+										<!--<input id="rangebar" type="range" name="price" id="price" min="0" max="100" step="0.5" value="0" style="width:100%;">
+                                            </input>-->
                                     </div>
                                 </div>
                                 <div class="row">
@@ -326,5 +330,10 @@
 	<script type="text/javascript" src="js/soap-calls.js"></script>
     <script type="text/javascript" src="js/json2csv.js"></script>
 	<script type="text/javascript" src="js/jquery.flot.resize.min.js"></script>
+    <script type="text/javascript" src="js/cache_implementation.js"></script>
+    <script type="text/javascript" src="js/cache_implementation_indexedDB.js"></script>
+    <script type="text/javascript" src="js/jqwidgets/jqxcore.js"></script>
+    <script type="text/javascript" src="js/jqwidgets/jqxbuttons.js"></script>
+    <script type="text/javascript" src="js/jqwidgets/jqxslider.js"></script>
   </body>
 </html>
