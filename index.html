@@ -48,234 +48,235 @@
 			<img id="loadingimage" src="img/ajax-loader.gif" />
 		</div>
 	</div>
-	
-	<div class="subnavbar">
-		<div class="subnavbar-inner">
-			<div class="container">
-				<a href="javascript:;" class="subnav-toggle collapsed" data-toggle="collapse" data-target=".subnav-collapse">
-				  <span class="sr-only">Toggle navigation</span>
-				  <i class="fa fa-bars"></i>
-				</a>
-				<div class="subnav-collapse collapse">
-					<img id="logo" src="img/related_logo.png" />
-					<ul class="mainnav">
-						<li class="active">
-							<a href="javascript:;">
-								<i class="fa fa-home"></i>
-								<span>Inicio</span>
-							</a>
-						</li>
-					</ul>
-				</div> <!-- /.subnav-collapse -->
-			</div> <!-- /container -->
-		</div> <!-- /subnavbar-inner -->
-	</div> <!-- /subnavbar -->
+	<div id="wrap">
+		<div class="subnavbar">
+			<div class="subnavbar-inner">
+				<div class="container">
+					<a href="javascript:;" class="subnav-toggle collapsed" data-toggle="collapse" data-target=".subnav-collapse">
+					  <span class="sr-only">Toggle navigation</span>
+					  <i class="fa fa-bars"></i>
+					</a>
+					<div class="subnav-collapse collapse">
+						<img id="logo" src="img/related_logo.png" />
+						<ul class="mainnav">
+							<li class="active">
+								<a href="javascript:;">
+									<i class="fa fa-home"></i>
+									<span>Inicio</span>
+								</a>
+							</li>
+						</ul>
+					</div> <!-- /.subnav-collapse -->
+				</div> <!-- /container -->
+			</div> <!-- /subnavbar-inner -->
+		</div> <!-- /subnavbar -->
 
 
-    <!-- Marketing messaging and featurettes
-    ================================================== -->
-    <!-- Wrap the rest of the page in another container to center all the content. -->
-	<div class="marketing">
-		<div>
-			<div class="row">
-				<div class="col-sm-12">
-                	<div class="widget">
-                    	<div class="widget-header">
-							<i class="fa fa-th"></i>
-							<h3>Sessions Information</h3>
-							<div class="widget-ctrls"> 
-								<a href="javascript:;" class="button-icon button-icon-minimize"><i class="fa fa-minus"></i></a>
-							</div>
-						</div> <!-- /widget-header -->
-                        
-                        <div class="widget-content">
-							<div style="padding-bottom:5px;">
-								<span style="font-weight:bold;">Work Session ID:</span><span id="workSessionID">Id for Work Session</span>
-							</div>
-                        	<table class="table table-striped table-bordered" id="sessionsInformationTable">
-								<thead>
-									<tr>
-										<th>Laboratory</th>
-										<th class="text-center" >User</th>
-                                        <th class="text-center" >Experiment Name</th>
-                                        <th class="text-center" >Start time</th>
-                                        <th class="text-center" >Stop time</th>
-									</tr>
-								</thead>
-								<tbody>
-								</tbody>
-							</table>
-							<table class="table table-striped table-bordered" id="sessionsTable">
-								<thead>
-									<tr>
-										<th style="width:40%;">Sesión</th>
-										<th class="text-center" style="width:15%;">Finished</th>
-                                        <th class="text-center" style="width:15%;">Start time</th>
-                                        <th class="text-center" style="width:15%;">Stop time</th>
-                                        <th class="text-center" style="width:15%;"></th>
-									</tr>
-								</thead>
-								<tbody>
-								</tbody>
-							</table>
-                        </div>
-                    
-                    </div>
-				</div>
-			</div> <!-- /row -->
-			
-			<div id="sessioninfo" class="hidden">			
-				<div id="sessionbuttons" class="row">
-					<div class="col-sm-6">
-						<div class="shortcuts">
-							<a id="shortcutinfo" href="javascript:;" class="shortcut active">
-								<i class="shortcut-icon fa fa-list-alt"></i>
-								<span class="shortcut-label">Info</span>
-							</a>
-							<a id="shortcutgraphics" href="javascript:;" class="shortcut">
-								<i class="shortcut-icon fa fa-bar-chart-o"></i>
-								<span class="shortcut-label">Graphics</span>
-							</a>
-							<a id="shortcutlive" href="javascript:;" class="shortcut">
-								<i class="shortcut-icon fa fa-signal"></i>
-								<span class="shortcut-label">Live</span>
-							</a>
-						</div> <!-- /shortcuts -->
-					</div>
-					<div class="col-sm-6 text-left" style="margin-top:30px;">
-						<h3 style="font-weight:bold;">Session Selected:</h3><h3 id="sessionselected"></h3>
-					</div>
-				</div>
-				<div id="sessioninfoinfo" class="row">
+		<!-- Marketing messaging and featurettes
+		================================================== -->
+		<!-- Wrap the rest of the page in another container to center all the content. -->
+		<div class="marketing">
+			<div>
+				<div class="row">
 					<div class="col-sm-12">
 						<div class="widget">
 							<div class="widget-header">
-								<i class="fa fa-list-alt"></i>
-								<h3>Information</h3>
-							</div> <!-- /widget-header -->
-							<div class="widget-content clearfix">
-								<div class="labinfo">
-									<div class="row">
-										<div class="col-sm-4">
-										  <div class="form-group">
-											<label for="sessionid" class="control-label">Session ID</label>
-											<input type="text" class="form-control" id="sessionid" placeholder="Session ID" readonly>
-										  </div>
-										</div>
-										<div class="col-sm-4">
-										  <div class="form-group">
-											<label for="maxtimesession" class="control-label">Max Time Session (seconds)</label>
-											<input type="text" class="form-control" id="maxtimesession" placeholder="Max Time Session" readonly>
-										  </div>
-										</div>
-										<div class="col-sm-4">
-										  <div class="form-group">
-											<label for="sampletimesession" class="control-label">Sample Time Session (seconds)</label>
-											<input type="text" class="form-control" id="sampletimesession" placeholder="Sample Time Session" readonly>
-										  </div>
-										</div>
-									</div>
+								<i class="fa fa-th"></i>
+								<h3>Sessions Information</h3>
+								<div class="widget-ctrls"> 
+									<a href="javascript:;" class="button-icon button-icon-minimize"><i class="fa fa-minus"></i></a>
 								</div>
-							</div>
-						</div>
-					</div>
-				</div> <!-- /row -->
-				<div id="sessioninfographics" class="row">
-					<div class="col-sm-12">
-						<div class="widget">
-							<div class="widget-header">
-								<i class="fa fa-bar-chart-o"></i>
-								<h3>Gráficos</h3>
 							</div> <!-- /widget-header -->
-							<div class="widget-content clearfix">
-								<div class="row">
-									<div class="col-sm-3">
-										<button id="generateGraph" type="button" class="btn btn-primary"><i class="fa fa-bar-chart-o"></i> Generate graph</button>
-										<select id="names" multiple="multiple" class="multipleselect">
-										</select>
-									</div>
-									<div class="col-sm-3">
-										<button id="btnSave" type="button" class="btn btn-primary"><i class="fa fa-save"></i> Save</button>
-									</div>
-								</div>
 							
-								<div class="demo-container">
-									<div id="placeholder" class="demo-placeholder"></div>
+							<div class="widget-content">
+								<div style="padding-bottom:5px;">
+									<span style="font-weight:bold;">Work Session ID:</span><span id="workSessionID">Id for Work Session</span>
 								</div>
+								<table class="table table-striped table-bordered" id="sessionsInformationTable">
+									<thead>
+										<tr>
+											<th>Laboratory</th>
+											<th class="text-center" >User</th>
+											<th class="text-center" >Experiment Name</th>
+											<th class="text-center" >Start time</th>
+											<th class="text-center" >Stop time</th>
+										</tr>
+									</thead>
+									<tbody>
+									</tbody>
+								</table>
+								<table class="table table-striped table-bordered" id="sessionsTable">
+									<thead>
+										<tr>
+											<th style="width:40%;">Sesión</th>
+											<th class="text-center" style="width:15%;">Finished</th>
+											<th class="text-center" style="width:15%;">Start time</th>
+											<th class="text-center" style="width:15%;">Stop time</th>
+											<th class="text-center" style="width:15%;"></th>
+										</tr>
+									</thead>
+									<tbody>
+									</tbody>
+								</table>
 							</div>
+						
 						</div>
 					</div>
 				</div> <!-- /row -->
-				<div id="sessioninfolive" class="row">
-					<div class="col-sm-12">
-						<div class="widget">
-							<div class="widget-header">
-								<i class="fa fa-signal"></i>
-								<h3>Live</h3>
-							</div> <!-- /widget-header -->
-							<div class="widget-content clearfix">
-								
-                                <div class="row" style="margin-top:5px; margin-bottom:5px; margin-left:2px; margin-right:2px;">
-                                	<div class="col-sm-2">
-                                    	<button type="button" class="btn btn-success" id="btnStartLive"> 
-                                        <i class="fa fa-play"></i></button>
-                                        <button type="button" class="btn btn-danger hidden" id="btnPauseLive">
-                                        <i class="fa fa-pause"></i></button>
-                                        <div id="liveTime"></div>
-                                    </div>
-                                    <div class="col-sm-10">
-                                    	<div id="rangebar"></div>
-										<!--<input id="rangebar" type="range" name="price" id="price" min="0" max="100" step="0.5" value="0" style="width:100%;">
-                                            </input>-->
-                                    </div>
-                                </div>
-                                <div class="row">
-									<div class="col-sm-6">
-										<button id="showGraphLive" type="button" class="btn btn-primary"><i class="fa fa-bar-chart-o"></i> Show Graph</button>
-										<!--<select id="sltLiveStart" multiple="multiple">
-										</select>-->
-										<select id="sltShowGraph">
-										</select>
-									</div>
-									<div class="col-sm-6">
-										<button id="showViewLive" type="button" class="btn btn-primary"><i class="fa fa-th"></i> Show View</button>
-										<select id="sltShowView">
-										</select>
-									</div>
-								</div>
-								<div class="liveContainer">
-                                	<!-- <div id="liveGenerateGraph" class="hideElement">
-										<div class="demo-container">
-											<div id="placeholder2" class="demo-placeholder"></div>
-										</div>
-										<div class="row text-center">
-											<div class="html5-progress-bar col-sm-8 col-sm-offset-2">
-												<div class="progress-bar-wrapper">
-													<progress id="progressbar" value="0" max="100"></progress>
-													<span class="progress-value">0%</span>
-												</div>
-												
+				
+				<div id="sessioninfo" class="hidden">			
+					<div id="sessionbuttons" class="row">
+						<div class="col-sm-6">
+							<div class="shortcuts">
+								<a id="shortcutinfo" href="javascript:;" class="shortcut active">
+									<i class="shortcut-icon fa fa-list-alt"></i>
+									<span class="shortcut-label">Info</span>
+								</a>
+								<a id="shortcutgraphics" href="javascript:;" class="shortcut">
+									<i class="shortcut-icon fa fa-bar-chart-o"></i>
+									<span class="shortcut-label">Graphics</span>
+								</a>
+								<a id="shortcutlive" href="javascript:;" class="shortcut">
+									<i class="shortcut-icon fa fa-signal"></i>
+									<span class="shortcut-label">Live</span>
+								</a>
+							</div> <!-- /shortcuts -->
+						</div>
+						<div class="col-sm-6 text-left" style="margin-top:30px;">
+							<h3 style="font-weight:bold;">Session Selected:</h3><h3 id="sessionselected"></h3>
+						</div>
+					</div>
+					<div id="sessioninfoinfo" class="row">
+						<div class="col-sm-12">
+							<div class="widget">
+								<div class="widget-header">
+									<i class="fa fa-list-alt"></i>
+									<h3>Information</h3>
+								</div> <!-- /widget-header -->
+								<div class="widget-content clearfix">
+									<div class="labinfo">
+										<div class="row">
+											<div class="col-sm-4">
+											  <div class="form-group">
+												<label for="sessionid" class="control-label">Session ID</label>
+												<input type="text" class="form-control" id="sessionid" placeholder="Session ID" readonly>
+											  </div>
+											</div>
+											<div class="col-sm-4">
+											  <div class="form-group">
+												<label for="maxtimesession" class="control-label">Max Time Session (seconds)</label>
+												<input type="text" class="form-control" id="maxtimesession" placeholder="Max Time Session" readonly>
+											  </div>
+											</div>
+											<div class="col-sm-4">
+											  <div class="form-group">
+												<label for="sampletimesession" class="control-label">Sample Time Session (seconds)</label>
+												<input type="text" class="form-control" id="sampletimesession" placeholder="Sample Time Session" readonly>
+											  </div>
 											</div>
 										</div>
-									</div> -->
-                                    <div id="liveShowGraph" class="hideElement">
-										<div class="demo-container">
-											<div id="placeholder2" class="demo-placeholder"></div>
-										</div>
-									</div>
-									<div id="liveShowView" class="hideElement">
-										Show Views
 									</div>
 								</div>
 							</div>
 						</div>
-					</div>
-                    
-				</div> <!-- /row -->
+					</div> <!-- /row -->
+					<div id="sessioninfographics" class="row">
+						<div class="col-sm-12">
+							<div class="widget">
+								<div class="widget-header">
+									<i class="fa fa-bar-chart-o"></i>
+									<h3>Gráficos</h3>
+								</div> <!-- /widget-header -->
+								<div class="widget-content clearfix">
+									<div class="row">
+										<div class="col-sm-3">
+											<button id="generateGraph" type="button" class="btn btn-primary"><i class="fa fa-bar-chart-o"></i> Generate graph</button>
+											<select id="names" multiple="multiple" class="multipleselect">
+											</select>
+										</div>
+										<div class="col-sm-3">
+											<button id="btnSave" type="button" class="btn btn-primary"><i class="fa fa-save"></i> Save</button>
+										</div>
+									</div>
+								
+									<div class="demo-container">
+										<div id="placeholder" class="demo-placeholder"></div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div> <!-- /row -->
+					<div id="sessioninfolive" class="row">
+						<div class="col-sm-12">
+							<div class="widget">
+								<div class="widget-header">
+									<i class="fa fa-signal"></i>
+									<h3>Live</h3>
+								</div> <!-- /widget-header -->
+								<div class="widget-content clearfix">
+									
+									<div class="row" style="margin-top:5px; margin-bottom:5px; margin-left:2px; margin-right:2px;">
+										<div class="col-sm-2">
+											<button type="button" class="btn btn-success" id="btnStartLive"> 
+											<i class="fa fa-play"></i></button>
+											<button type="button" class="btn btn-danger hidden" id="btnPauseLive">
+											<i class="fa fa-pause"></i></button>
+											<div id="liveTime"></div>
+										</div>
+										<div class="col-sm-10">
+											<div id="rangebar"></div>
+											<!--<input id="rangebar" type="range" name="price" id="price" min="0" max="100" step="0.5" value="0" style="width:100%;">
+												</input>-->
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-sm-6">
+											<button id="showGraphLive" type="button" class="btn btn-primary"><i class="fa fa-bar-chart-o"></i> Show Graph</button>
+											<!--<select id="sltLiveStart" multiple="multiple">
+											</select>-->
+											<select id="sltShowGraph">
+											</select>
+										</div>
+										<div class="col-sm-6">
+											<button id="showViewLive" type="button" class="btn btn-primary"><i class="fa fa-th"></i> Show View</button>
+											<select id="sltShowView">
+											</select>
+										</div>
+									</div>
+									<div class="liveContainer">
+										<!-- <div id="liveGenerateGraph" class="hideElement">
+											<div class="demo-container">
+												<div id="placeholder2" class="demo-placeholder"></div>
+											</div>
+											<div class="row text-center">
+												<div class="html5-progress-bar col-sm-8 col-sm-offset-2">
+													<div class="progress-bar-wrapper">
+														<progress id="progressbar" value="0" max="100"></progress>
+														<span class="progress-value">0%</span>
+													</div>
+													
+												</div>
+											</div>
+										</div> -->
+										<div id="liveShowGraph" class="hideElement">
+											<div class="demo-container">
+												<div id="placeholder2" class="demo-placeholder"></div>
+											</div>
+										</div>
+										<div id="liveShowView" class="hideElement">
+											Show Views
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						
+					</div> <!-- /row -->
+				</div>
 			</div>
 		</div>
 	</div>
-
+	
 	<!-- FOOTER -->
 	<footer class="footer">
 		<div class="container text-center" style="color:#888;">

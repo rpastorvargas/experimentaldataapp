@@ -44,8 +44,33 @@ var dataGraph = [];
 var dataGraphLive = [];
 
 
+/*************************************************************************
+	Live graphics otions
+*************************************************************************/
+var options = {
+    series: {
+        lines: {
+            show: true,
+            lineWidth: 2 //1.2,
+            //fill: true
+        }
+    },
+    /* yaxis: {
+        min: 0,
+        max: getMaxValueY    
+    }, */
+	legend: {        
+        labelBoxBorderColor: "#fff"
+    },
+    grid: {                
+        backgroundColor: "#FFFFFF",
+        tickColor: "#F0F8FF"
+    }
+};
+
+
 $(document).ready(function() {
-	
+		
 	// Create db to cache session data!!!
 	cachedSessionsDB.open(function(){
 		console.log("Sessions Caché DB created or updated");
@@ -95,18 +120,6 @@ $(document).ready(function() {
 		paintGraph();
 	});
 	
-	$("#startLive").click(function() {
-		$("#liveShowView").hide();
-		$("#liveGenerateGraph").show();
-		
-		/*if (plot !== "undefined") {
-			plot.shutdown();
-		}
-		*/
-		//paintGraphInterval();
-		//updateProgressBar();
-	});
-	
 	// Live control
 	$("#btnStartLive").click(function(){
 		$("#btnStartLive").addClass("hidden");
@@ -118,11 +131,7 @@ $(document).ready(function() {
 	});
 	
 	$("#btnPauseLive").click(function(){
-		$("#btnStartLive").removeClass("hidden");
-		$("#btnPauseLive").addClass("hidden");
-		window.clearInterval(liveTimer);
-		liveTimer = null;
-		$('#rangebar').jqxSlider({ disabled:false }); 
+		doPause();
 	});
 	
 	// Buttons for generated graphs and views
@@ -136,28 +145,16 @@ $(document).ready(function() {
 			id = $(div).attr("id");
 			if (id==div_to_shown){
 				$(div).show();
+				
+				// TODO: Change size in original place
+				var iframefind = $(div).find('iframe');
+				iframefind.width('100%');
 			} else {
 				$(div).hide();
 			}
 		});
+	});
 
-	});
-/*	$("#showGraphLive").click(function() {
-		$("#liveShowView").hide();
-		$("#liveShowGraph").show();
-		// Select graph (value on select) and show
-		div_to_shown = $("#sltShowGraph").val();
-		var $graphs_divs = $('#liveShowGraph > div');
-		$.each($graphs_divs, function(i,div){
-			id = $(div).attr("id");
-			if (id==div_to_shown){
-				$(div).show();
-			} else {
-				$(div).hide();
-			}
-		});
-	});
-*/	
 	$("#showGraphLive").click(function() {
 		// clearTimeout(updateTimeOut);
 		// interval = 0;
@@ -165,13 +162,13 @@ $(document).ready(function() {
 		// dataGraphLive = [];
 		$("#liveShowView").hide();
 		$("#liveShowGraph").show();
-		
 		// Calculate MaxValue for Yaxis
 		// maxvalueYAxis = getMaxValueYAxis();
 		
 		// sample time
 		sampleTime = parseFloat($('#sampletimesession').val())*1000;
-		paintGraphInterval(liveTimerIndex,sampleTime,samplesOnLiveGraphics);
+		//paintGraphInterval(liveTimerIndex,sampleTime,samplesOnLiveGraphics);
+		liveTimerTask();
 		
 	});
 		
@@ -204,7 +201,11 @@ $(document).ready(function() {
 		// Update
 		liveTimerTime = parseFloat($('#sampletimesession').val())*1000;
 	});
-	
+
+	$('#sltShowGraph').change(function(){
+		dataGraphLive = [];
+	});
+
 	$(document).on('click', ".graphlegend", function() {
 		paintTable($(this).text());
 		$('#myModal').modal('show');
@@ -236,17 +237,15 @@ $(document).ready(function() {
 		}
 	});
 	
-	/*$('#rangebar').change( function() {
-		// Time
-		var newValue = this.value;
-		// Calculate new
-		sampleTime = parseFloat($('#sampletimesession').val());
-		liveTimerIndex = parseInt(newValue/sampleTime);
-		// udpate 
-		liveTimerTask();
-	}); */
-	
 });
+
+function doPause() {
+	$("#btnStartLive").removeClass("hidden");
+	$("#btnPauseLive").addClass("hidden");
+	window.clearInterval(liveTimer);
+	liveTimer = null;
+	$('#rangebar').jqxSlider({ disabled:false }); 
+}
 
 function getMaxValueYAxis() {
 
@@ -257,9 +256,6 @@ function getMaxValueYAxis() {
 	var namesSelect = valSelect.split('_')[1].split('-');
 	for (i = 0; i < namesSelect.length; i++) {
 		var nameSelect = namesSelect[i].split('~')[0];
-		//var obj = soapResponseData.toJSON().Body;
-		//var returnval = obj.getSessionSimpleDataSetResponse.return;
-		//jQuery.each(returnval.data, function(i, ipos) {
 		jQuery.each(dataSession.data, function(i, ipos) {
 			var vars = JSON.parse(ipos);
 			jQuery.each(vars.vars, function(j, jpos) {
@@ -384,6 +380,7 @@ function configureProgressBar() {
 		// Calculate new
 		sampleTime = parseFloat($('#sampletimesession').val());
 		liveTimerIndex = parseInt(newValue/sampleTime);
+		
 		// udpate 
 		liveTimerTask();
     });
@@ -396,30 +393,6 @@ function configureProgressBar() {
 	$('#rangebar').attr('max',maxtimesession);
 	$('#rangebar').attr('step',sampleTime);
 } 
-
-/*************************************************************************
-	Live graphics otions
-*************************************************************************/
-var options = {
-    series: {
-        lines: {
-            show: true,
-            lineWidth: 2 //1.2,
-            //fill: true
-        }
-    },
-    /* yaxis: {
-        min: 0,
-        max: getMaxValueY    
-    }, */
-	legend: {        
-        labelBoxBorderColor: "#fff"
-    },
-    grid: {                
-        backgroundColor: "#FFFFFF",
-        tickColor: "#F0F8FF"
-    }
-};
 
 function paintGraphInterval(liveTimerIndex,sampleTime,samplesOnLiveGraphics) {
 	getGraphDataInterval("#sltShowGraph option:selected",interval,sampleTime,samplesOnLiveGraphics);
@@ -460,16 +433,6 @@ function getGraphDataInterval(selector,liveTimerIndex,sampleTime,samplesOnLiveGr
 
 function getGraphDataIntervalSimple(liveTimerIndex,sampleTime,samplesOnLiveGraphics, moduleName,nameSelect,color) {
 	var dataGraph2 = [];
-	//var obj = soapResponseData.toJSON().Body;
-	//var returnval = obj.getSessionSimpleDataSetResponse.return;
-	//jQuery.each(returnval.data, function(i, ipos) {
-	// reduce the data array to [liveTimerIndex-10000, liveTimerIndex]
-	
-	// liveTimerIndex is the actual index on data array
-	// calculated in the liveTimer
-	
-	// sample time in ms
-	
 	// samplesOnLiveGraphics = 100; // 10 seconds (depens on sampleTime of experimental session
 								 // This case: 0.1 s --> 0.1x100 = 10 s
 	if (typeof liveTimerIndex != "undefined"){ 
@@ -500,7 +463,6 @@ function getGraphDataIntervalSimple(liveTimerIndex,sampleTime,samplesOnLiveGraph
 
 function paintGraph() {
 	getGraphData("#names option:selected");
-	//$.plot("#placeholder", dataGraph);
 	$.plot($("#placeholder"), dataGraph, {
 		series: {
 			lines: {
@@ -601,45 +563,6 @@ function getSessionSimpleDataSetFunction(soapResponse,parameters) {
 				console.log("Session data saved: " + sessionInfoObject.sessionId);
 			}
 	);
-	// paintViewsInfo();
-	//paintMultipleSelect();
-/*	jQuery.each(returnval.data, function(i, ipos) {
-		var vars = JSON.parse(ipos);
-		jQuery.each(vars.vars, function(j, jpos) {
-			var found = $.inArray(jpos.moduleName, names) > -1;
-			var nameoption = '';
-			if (!found) {
-				names.push(jpos.moduleName);
-				names2 = [];
-				var index = names.indexOf(jpos.moduleName);
-				var nameoption = jpos.name + '_' + index;
-				names2.push(nameoption);
-				names[jpos.moduleName] = names2;
-			}
-			else {		
-				names2 = names[jpos.moduleName];
-				var index = names.indexOf(jpos.moduleName);
-				var nameoption = jpos.name + '_' + index;
-				var found2 = $.inArray(nameoption, names2) > -1;
-				if (!found2) {
-					names2.push(nameoption);
-					names[jpos.moduleName] = names2;
-				}
-			}
-		});
-	});
-	var res = '';
-	$('.multipleselect').html('');
-	jQuery.each(names, function(i, name) {
-		res = "";
-		jQuery.each(names[name], function(j, name2) {
-			res = res + '<option value=' + name2 + '>' + name2.split('_')[0] + '</option>';
-		});
-		$('.multipleselect').append('<optgroup label="' + name + '">' + res + '</optgroup>');
-	});	
-	$('.multipleselect').multiselect('rebuild');
-*/	
-	//$('.multipleselect').multiselect('rebuild');
 }
 
 /**************************************************************
@@ -707,8 +630,11 @@ function getExperimentSessionsFunction(soapResponse,parameters) {
 		row += '<td class="text-center">' + startDate.toLocaleString() + '</td>';
 		var stopDate = new Date(session.stopDate); //Date.parse(session.stopDate);
 		row += '<td class="text-center">' + stopDate.toLocaleString() + '</td>';
-		row += '<td class="text-center"><a href="javascript:;" class="btn btn-default btn-primary">';
+		row += '<td class="text-center"><a href="javascript:;" class="btn btn-default btn-primary" title="Load data">';
 		row += '<i class="btn-icon-only fa fa-check selectsession">';
+		row += '</i></a> ';
+		row += '<a href="javascript:;" class="btn btn-default btn-primary" title="Refresh Cache">';
+		row += '<i class="btn-icon-only fa fa-rotate-right refreshcache">';
 		row += '</i>';
 		row += '</a></td></tr>';
 		row_object = $(row);
@@ -718,7 +644,16 @@ function getExperimentSessionsFunction(soapResponse,parameters) {
 		loadSoapSessionDataManagementWS('getSessionInfo',{ sessionId: session.ID },getExperimentalSessionInfoFunction);
 	});
 	
-	/// Add the handler
+	/// Add the handlers
+	$(".refreshcache").click(function() {
+		var sessionIDval = $(this).closest("tr").find(".sessionid").text();
+		cachedSessionsDB.deleteSessionInfo(sessionIDval, 
+			function(){
+				$( "#sessioninfo" ).addClass("hidden");
+				console.log("Cache deleted for session " + sessionIDval);
+			}
+		);
+	});
 	// Click handler related to the associated session
 	$(".selectsession").click(function() {
 		var sessionIDval = $(this).closest("tr").find(".sessionid").text();
@@ -745,6 +680,7 @@ function getExperimentSessionsFunction(soapResponse,parameters) {
 				} else {
 					// Data is not loaded
 					// get from services source
+					console.log('Cargamos SOAP');
 					loadSoapSessionDataManagementWS('getMaxTimeSession',parameters,getMaxTimeSessionFunction,0);
 					loadSoapSessionDataManagementWS('getSampleTimeSession',parameters,getSampleTimeSessionFunction,0);
 					loadSoapSessionDataManagementWS('getSessionSimpleDataSet',parameters,getSessionSimpleDataSetFunction,1);

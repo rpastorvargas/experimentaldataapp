@@ -144,7 +144,7 @@ function convertColorRGB(color) {
 			value = '0000FF';
 			break;
 		default:
-			value = '';
+			value = '000000';
 	}
 	return value;
 }
