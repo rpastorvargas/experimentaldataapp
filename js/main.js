@@ -374,15 +374,23 @@ function configureProgressBar() {
 		
 		
 	$("#rangebar").jqxSlider(barOptions);
-	$('#rangebar').bind('change', function (event) {
-        // Time
-		var newValue = event.args.value;
-		// Calculate new
-		sampleTime = parseFloat($('#sampletimesession').val());
-		liveTimerIndex = parseInt(newValue/sampleTime);
-		
-		// udpate 
-		liveTimerTask();
+	$('#rangebar').bind('change', function (event) {	
+		// udpate only if not play button is presses
+		running = $("#btnStartLive").hasClass('hidden');
+		if (!running){
+			// Time
+			var newValue = event.args.value;
+			// Calculate new value
+			sampleTime = parseFloat($('#sampletimesession').val());
+			// calculus must be fixed to sample time interval values!!!
+			var new_liveTimerIndex = parseInt(newValue/sampleTime);
+			if (liveTimerIndex != new_liveTimerIndex){
+				// Update
+				// console.log("new: " +  new_liveTimerIndex + " <-- old: " + liveTimerIndex);
+				liveTimerIndex = new_liveTimerIndex;
+				liveTimerTask();	
+			}
+		} 
     });
 	
 	//progressbar = $('#progressbar');
@@ -499,16 +507,22 @@ function paintTable(label) {
 function getGraphData(selector) {
 	dataGraph = [];
 	$(selector).each(function() {
-		var nameSelect = $(this).val().split('(')[0].split('_')[0];
-		var moduleName = $(this).parent().attr( "label" );
+		//var nameSelect = $(this).val().split('(')[0].split('_')[0];
+		// var moduleName = $(this).parent().attr( "label" );
+		var hash_value = $(this).val(); 
+		var nameSelect = "";
 		var dataGraph2 = [];
 		// dataSession stores the session data !!!
 		jQuery.each(dataSession.data, function(i, ipos) {
 			var vars = JSON.parse(ipos);
 			var tickSealedTime = vars.sealed_time;
 			jQuery.each(vars.vars, function(j, jpos) {
-				if (nameSelect == jpos.name && moduleName == jpos.moduleName) {
-					dataGraph2.push([tickSealedTime/100, jpos.value]);
+				// jpos contains the variable 
+				var_hash_value = getHashValue(jpos);
+				if (hash_value == var_hash_value) {
+					dataGraph2.push([tickSealedTime/1000, jpos.value]);
+					// Set the name
+					nameSelect = jpos.name;
 					return false;
 				}
 			});
@@ -561,6 +575,9 @@ function getSessionSimpleDataSetFunction(soapResponse,parameters) {
 	cachedSessionsDB.addSessionInfo(parameters.sessionId,maxTime,sampleTime,dataSession, 
 			function(sessionInfoObject){
 				console.log("Session data saved: " + sessionInfoObject.sessionId);
+				msg = $('#sessionselected_source_webservice').html();
+				msg += "<br/>Data has been stored in the local cache";
+				$('#sessionselected_source_webservice').html(msg);
 			}
 	);
 }
@@ -656,6 +673,9 @@ function getExperimentSessionsFunction(soapResponse,parameters) {
 	});
 	// Click handler related to the associated session
 	$(".selectsession").click(function() {
+		
+		old_session = $('#sessionselected').html();
+		
 		var sessionIDval = $(this).closest("tr").find(".sessionid").text();
 		var parameters = { sessionId: sessionIDval };
 		// Check for session data in experimental data service
@@ -666,6 +686,26 @@ function getExperimentSessionsFunction(soapResponse,parameters) {
 		$('#sessionselected').html(sessionIDval);
 		$('#sessionid').val(sessionIDval);
 		
+		// This must be done if the sessionId selected is diferent from
+		// actual data
+		if (old_session != "" &&
+				old_session != sessionIDval){
+			// Call click info button !!!
+			$('#shortcutinfo').click();
+			// Reset graph and live views !!!
+			paintGraph(); // None selected
+			// Restore the default behavouir
+			$("#liveShowView").hide();
+			$("#liveShowGraph").hide();
+			// stop the timer !!!
+			if ($('#btnStartLive').hasClass('hidden')){
+				// running
+				// stop it
+				$("#btnPauseLive").click();
+			}
+			// reset values for live 
+			liveTimerIndex = 0;
+		}
 		// Look for cached data
 		cachedSessionsDB.findBySessionId(sessionIDval, 
 			function (sessionInfoData){
@@ -677,6 +717,9 @@ function getExperimentSessionsFunction(soapResponse,parameters) {
 					$('#sampletimesession').val(sessionInfoData.sampleTime);
 					paintMultipleSelect();
 					$( "#sessioninfo" ).removeClass("hidden");
+					// Warn to user !!
+					$('#sessionselected_source_cache').removeClass('hidden');
+					$('#sessionselected_source_webservice').addClass('hidden');
 				} else {
 					// Data is not loaded
 					// get from services source
@@ -684,6 +727,8 @@ function getExperimentSessionsFunction(soapResponse,parameters) {
 					loadSoapSessionDataManagementWS('getMaxTimeSession',parameters,getMaxTimeSessionFunction,0);
 					loadSoapSessionDataManagementWS('getSampleTimeSession',parameters,getSampleTimeSessionFunction,0);
 					loadSoapSessionDataManagementWS('getSessionSimpleDataSet',parameters,getSessionSimpleDataSetFunction,1);
+					$('#sessionselected_source_cache').addClass('hidden');
+					$('#sessionselected_source_webservice').removeClass('hidden');
 				}
 			},
 			function (error){

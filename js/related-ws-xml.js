@@ -3,7 +3,11 @@ var systemId;
 var varsInfo = null;
 var graphs_info = null;
 var views_info = null;
+var xml_source_ip = null;
 
+// tmp variable for remote systems/modules
+var remote_module_name = "";
+var remote_xml_source_ip = null;
 /**************************************************************
 
 SOAP SERVICES: getSystemID
@@ -14,6 +18,8 @@ Description: Returns ID of Lab. Needed for get lab structure !!!
 **************************************************************/
 
 function getSystemIdFunction(soapResponse,parameters){
+	// Copy the ip in the global variable
+	xml_source_ip = parameters.ip;
 	var obj = soapResponse.toJSON().Body;
 	var system = obj.getSystemIDResponse.return;
 	if (typeof system == "string"){
@@ -53,6 +59,32 @@ function getXmlConfFileSuccessFunction(soapResponse, soapParams){
 				views_info = getViewsInfo($(this),$xml);
 				// Build the UI (example) !!!
 				buildUI(systemId, views_info,graphs_info)
+			}
+		});
+		
+	} else {
+		$('#xmlConfFile').html("No xml defined...");
+	}
+	// For the live view !!!
+	// buildUI(systemId,viewObjectsArray,graphInfoObjectsArray);
+}
+
+function getRemoteXmlConfFileSuccessFunction(soapResponse, soapParams){
+	var return_value = soapResponse.toJSON().Body.getXmlConfFileResponse.return;
+	xmlContent = return_value.xmlConfFile;
+	if (typeof xmlContent != "undefined"){
+		//xmlDoc = $.parseXML(xmlContent.substring(3));
+		xmlDoc = $.parseXML(xmlContent);
+		$xml = $( xmlDoc );
+		// Find experiments
+		var $modules = $xml.find("module");
+		$modules.each(function(){
+			var name = $(this).attr('name');
+			if (name==remote_module_name){
+				// Add remote vars to local
+				remoteVarsInfo = getVarsInfosFromRemoteModule($(this), $xml,remote_xml_source_ip);
+				// Add to varsInfo array
+				varsInfo = $.merge(varsInfo,remoteVarsInfo);
 			}
 		});
 		
@@ -164,17 +196,17 @@ function paintMultipleSelect() {
 	var modules = [];
 	var names = [];
 	jQuery.each(varsInfo, function(i, ipos) {
-		var found = $.inArray(ipos.module, modules) > -1;
+		var found = $.inArray(ipos.moduleName, modules) > -1;
 		if (!found) {
-			modules.push(ipos.module);
+			modules.push(ipos.moduleName);
 			names = [];
 			names.push(ipos);
-			modules[ipos.module] = names;
+			modules[ipos.moduleName] = names;
 		}
 		else {
-			names = modules[ipos.module];
+			names = modules[ipos.moduleName];
 			names.push(ipos);
-			modules[ipos.module] = names;
+			modules[ipos.moduleName] = names;
 		}
 	});	
 	$('.multipleselect').html('');
@@ -182,7 +214,11 @@ function paintMultipleSelect() {
 		var res = '';
 		jQuery.each(modules[ipos], function(j, jpos) {
 			var name = jpos.name + '(' + jpos.units + ')';
-			var value = jpos.name + '_' + jpos.module;
+			//var value = jpos.name + '_' + jpos.module;
+			
+			// jpos contains the variable
+			// calculate the hash value to use as id
+			var value = getHashValue(jpos);
 			//res = res + '<option value=' + jpos.name + '_' + i + '>' + name + '</option>';
 			res = res + '<option value=' + value + '>' + name + '</option>';
 		});
@@ -204,13 +240,30 @@ function getVarsInfos($experiment_node,$system_node){
 		// corresponding to the module name
 		module_name = $(element).attr('module');
 		module_type = $(element).attr('type');
+		
+		// Check for system name
+		
+		// Generate the full quailifies name
+		// Format: //ip/systemname
+		systemName = ($system_node.find('system')).attr('name');
+		fullQualifiedSystemName = "//" + xml_source_ip + "/" + systemName;
+		
+		// Maybe a remote system??
 		remote_system = null;
 		if (module_type=="remote"){
 			// Remote module !!!
 			remote_system = $(this).attr('source');
+			fullQualifiedSystemName = remote_system;
+			// Find remote variables from remote system
+			r_system = decodeRemoteSystem(remote_system);
+			remote_system_id = r_system.id;
+			remote_xml_source_ip = r_system.ip;
+			remote_module_name = module_name;
+			// Call the web service to get vars info from module
+			loadSoapXMLLoaderWS('getXmlConfFile',{systemId:remote_system_id},getRemoteXmlConfFileSuccessFunction);
 		}
-				
-		// All modules defined in system !!!
+		
+		// All modules defined in system (local) !!!
 		$modules = $system_node.find('module');
 		$modules.each(function(index, element) {
 			if ( $(element).attr('name') == module_name ){
@@ -226,15 +279,40 @@ function getVarsInfos($experiment_node,$system_node){
 					variable.min = variable_json.min;
 					variable.initial = variable_json.initial;
 					variable.units = variable_json.units;
-					variable.module = module_name;
-					if (remote_system!=null){
-						variable.system = remote_system; 
-					}
+					variable.moduleName = module_name;
+					variable.fullQualifiedSystemName = fullQualifiedSystemName;
 					varsInfoArray.push(variable);
 				});
 			}
 		});
 	});
+	return varsInfoArray;
+}
+
+function getVarsInfosFromRemoteModule($module_node,$system_node,ip){
+	varsInfoArray = new Array();
+	
+	module_name = $module_node.attr('name');
+	// Generate the full quailifies name
+	// Format: //ip/systemname
+	systemName = ($system_node.find('system')).attr('name');
+	fullQualifiedSystemName = "//" + ip + "/" + systemName;
+	$vars = $module_node.find('var');
+	$vars.each(function(index, element) {
+		variable_json = $.xml2json(element);
+		variable = new Object();
+		variable.name = variable_json.name;
+		variable.description = variable_json.text;
+		variable.type = variable_json.type;
+		variable.max = variable_json.max;
+		variable.min = variable_json.min;
+		variable.initial = variable_json.initial;
+		variable.units = variable_json.units;
+		variable.moduleName = module_name;
+		variable.fullQualifiedSystemName = fullQualifiedSystemName;
+		varsInfoArray.push(variable);
+	});
+	
 	return varsInfoArray;
 }
 
@@ -322,3 +400,42 @@ function buildUI(systemId, viewObjectsArray, graphInfoObjectsArray){
 	}
 }
 
+/*********************************************************************
+
+CALCULATE HASH VALUE FOR A VARIABLE
+
+Returns a MD5 Hash of variables properties: name, module, system (unique id)
+Use the javascript library located in:
+http://pajhome.org.uk/crypt/md5/
+Supports MD5, RIPE, SHA, SHA-256 & SHA-512
+**********************************************************************/
+function getHashValue(variable){
+	// Create an unique id for the variable
+	var hash_value = null;
+	
+	if (variable != null){
+		// Take properties from variables
+		string_properties = variable.name + ":" + variable.moduleName + ":" + variable.fullQualifiedSystemName;
+		// Call the library function
+		hash_value = hex_md5(string_properties); 
+	}
+	
+	return hash_value;
+	
+}
+
+function decodeRemoteSystem(remote_source){
+	// FORMAT --> //ip/id
+	var subStrings = remote_source.split("/");
+	// The last is the good!!!
+	id = subStrings[subStrings.length-1];
+	
+	// Ip
+	subStrings = (subStrings[subStrings.length-2]).split(":");
+	ip = subStrings[0];
+	
+	remote_system = new Object();
+	remote_system.id = id;
+	remote_system.ip = ip;
+	return remote_system;
+}
